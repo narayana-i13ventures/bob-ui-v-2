@@ -23,7 +23,7 @@ import {
 import { BiCompass } from "react-icons/bi";
 import { FaGlobeEurope } from "react-icons/fa";
 import { usePathname, useRouter } from "next/navigation";
-import { fetchMenu, selectMenu, updateMenu, updateMenuSelected, useDispatch, useSelector } from "@/lib/redux";
+import { fetchMenu, menuSlice, selectMenu, updateMenu, updateMenuSelected, useDispatch, useSelector } from "@/lib/redux";
 
 
 function arePathsEqual(newFrameworks: any, oldFrameworks: any) {
@@ -62,29 +62,6 @@ export default function Menu(props: any) {
         dispatch(fetchMenu())
     }, []);
 
-    useEffect(() => {
-        const updatedMenu = menu?.map((method: any) => ({
-            ...method,
-            frameworks: method.frameworks.map((framework: any) => ({
-                ...framework,
-                canvases: framework.canvases.map((canvas: any) => ({
-                    ...canvas,
-                    selected: canvas.route !== '' ? pathName.includes(canvas.route) : false,
-                })),
-            })),
-        }));
-        // Check if pathName has changed for any canvas
-        const hasPathNameChanged = updatedMenu?.[0]?.frameworks.some((framework: any) => {
-            return framework.canvases.some((canvas: any) => {
-                const originalCanvas = menu?.[0]?.frameworks.find((f: any) => f.name === framework.name)?.canvases.find((c: any) => c.name === canvas.name);
-                return originalCanvas?.selected !== canvas.selected;
-            });
-        });
-
-        if (hasPathNameChanged) {
-            dispatch(updateMenu({ frameworks: updatedMenu?.[0]?.frameworks }));
-        }
-    }, [pathName, menu]);
 
     const handleCanvasClick = (clickedCanvas: any) => {
         router.push(`${clickedCanvas.route}`)
