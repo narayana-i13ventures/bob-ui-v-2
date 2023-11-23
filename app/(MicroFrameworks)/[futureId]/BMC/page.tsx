@@ -132,7 +132,7 @@ const BMCCanvas = () => {
                       icon: "/images/i13logo.png",
                     });
                     notification.onclick = () => {
-                      router.push(`${futureId}/CVP`)
+                      router.push(`Future1/CVP`)
                     }
                   }
                 }
