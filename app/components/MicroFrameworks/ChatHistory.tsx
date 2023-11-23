@@ -78,7 +78,7 @@ export default function ChatHistory(props: any) {
     useEffect(() => {
         if (pathName === "/Future1/BMC") {
             setConversation(Future1BMCConversation);
-            dispatch(updateMenuLock({ canvasName: "Value Proposisition Canvas", value: true }))
+
         } else if (pathName === "/Future2/BMC") {
             setConversation(Future2BMCConversation);
         } else if (pathName === "/Future3/BMC") {
@@ -126,6 +126,7 @@ export default function ChatHistory(props: any) {
     const resetCanvas = () => {
         if (pathName === "/Future1/BMC") {
             dispatch(Future1BMCReset())
+            dispatch(updateMenuLock({ canvasName: "Value Proposisition Canvas", value: true }))
         } else if (pathName === "/Future2/BMC") {
             dispatch(Future2BMCReset())
         } else if (pathName === "/Future3/BMC") {
