@@ -527,7 +527,6 @@ function ChatBotModal(props: any) {
                                         <Flex
                                             key={index}
                                             alignItems={"start"}
-                                            flexDirection={speechBubbles.role === 'user' ? 'row-reverse':'row'}
                                             bg={speechBubbles.role === "user" ? "white" : "gray.100"}
                                             rounded={"sm"}
                                             p={1}
