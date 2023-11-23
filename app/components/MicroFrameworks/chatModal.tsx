@@ -16,6 +16,7 @@ import {
     useToast,
     Avatar,
     Textarea,
+    Image
 } from "@chakra-ui/react";
 import {
     useSelector,
@@ -43,6 +44,7 @@ import { fetchEventSource } from "@microsoft/fetch-event-source";
 import { BsFillMicFill, BsSend } from "react-icons/bs";
 import { useKeyPressEvent } from "react-use";
 import { useParams, usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 
 function ChatBotModal(props: any) {
@@ -68,6 +70,9 @@ function ChatBotModal(props: any) {
         error,
     } = useSelector(selectThinkBeyond);
 
+    const { data: session }: { data: any } = useSession({
+        required: true,
+    });
 
     const [selectedCard, setSelectedCard] = useState<any>(null);
     const currentFuture = futureId === 'Future1' ? 1 : futureId === 'Future2' ? 2 : futureId === 'Future3' ? 3 : null;
@@ -526,18 +531,21 @@ function ChatBotModal(props: any) {
                                             rounded={"sm"}
                                             p={1}
                                         >
-                                            <Flex ml={2} mr={2}>
-                                                <Avatar
+                                            <Flex ml={2} mr={2} w={'7%'} borderRadius={'100%'} overflow={'hidden'}>
+                                                <Image
                                                     src={
                                                         speechBubbles.role === "user"
-                                                            ? "/images/user.png"
+                                                            ? `${session?.user?.image}`
                                                             : "/images/bob.png"
                                                     }
-                                                    w={10}
-                                                    h={10}
+                                                    borderRadius={'100%'} overflow={'hidden'}
+                                                    w={'100%'}
+                                                    maxWidth={'70px'}
+                                                    referrerPolicy="no-referrer"
                                                 />
                                             </Flex>
                                             <Text
+                                                w={'93%'}
                                                 id={`message-${index}`}
                                                 fontWeight={
                                                     speechBubbles.role === "user" ? "normal" : "medium"
