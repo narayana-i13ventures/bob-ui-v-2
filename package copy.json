@@ -1,0 +1,31 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@chakra-ui/next-js": "^2.1.5",
+    "@chakra-ui/react": "^2.8.1",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@microsoft/fetch-event-source": "^2.0.1",
+    "@reduxjs/toolkit": "1.9.5",
+    "framer-motion": "^10.16.4",
+    "next": "latest",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-icons": "^4.11.0",
+    "react-redux": "8.1.0",
+    "react-use": "^17.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "20.3.1",
+    "@types/react": "18.2.8",
+    "@types/react-dom": "18.2.5",
+    "@types/redux-logger": "3.0.9",
+    "redux-logger": "3.0.6",
+    "typescript": "5.1.3"
+  }
+}
