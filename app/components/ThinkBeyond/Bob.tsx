@@ -181,7 +181,7 @@ const Bob = () => {
         borderRadius="20px"
         direction="column"
         justifyContent="flex-end"
-        zIndex={showBob ? 1000 : 100}
+        zIndex={showBob ? 10003 : 10000}
         transition="all 0.5s ease"
       >
         <Flex
