@@ -61,7 +61,7 @@ export default function Menu(props: any) {
     useEffect(() => {
         dispatch(fetchMenu())
     }, []);
-    
+
     useEffect(() => {
         const updatedMenu = menu?.map((method: any) => ({
             ...method,
@@ -87,16 +87,6 @@ export default function Menu(props: any) {
     }, [pathName, menu]);
 
     const handleCanvasClick = (clickedCanvas: any) => {
-        const updatedMenu = menu?.map((method: any) => ({
-            ...method,
-            frameworks: method.frameworks.map((framework: any) => ({
-                ...framework,
-                canvases: framework.canvases.map((canvas: any) => ({
-                    ...canvas,
-                    selected: canvas.name === clickedCanvas.name,
-                })),
-            })),
-        }));
         router.push(`${clickedCanvas.route}`)
         dispatch(updateMenuSelected({ canvasName: clickedCanvas?.name, value: true }))
     };

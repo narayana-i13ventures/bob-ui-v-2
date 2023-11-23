@@ -123,7 +123,7 @@ const BMCCanvas = () => {
         fetchPrefillData(url, body)
           .then((data) => {
             dispatch(Future1CVPPrefill(data))
-              .then((data) => {
+              .then((data:any) => {
                 dispatch(AppSlice.actions.toggleMessageModal(false))
                 dispatch(updateMenuLock({canvasName:"Value Proposisition Canvas" , value:false}))
                 if ("Notification" in window) {
