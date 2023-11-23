@@ -526,7 +526,7 @@ function ChatBotModal(props: any) {
                                     ) : (
                                         <Flex
                                             key={index}
-                                            alignItems={"center"}
+                                            alignItems={"start"}
                                             bg={speechBubbles.role === "user" ? "white" : "gray.100"}
                                             rounded={"sm"}
                                             p={1}
