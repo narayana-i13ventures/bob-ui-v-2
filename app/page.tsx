@@ -23,32 +23,32 @@ export default function Home() {
   //   }, 800);
   //   return () => clearInterval(interval);
   // }, []);
-  // useEffect(() => {
-  //   if ("Notification" in window) {
-  //     if (Notification.permission === "granted") {
-  //       // Permission is already granted, no need to show a notification
-  //     } else if (Notification.permission === "denied") {
-  //       // User denied permission, handle as needed
-  //     } else {
-  //       dispatch(AppSlice.actions.toggleNotificationModal(true));
-  //       // Permission is not granted; request it
-  //       Notification.requestPermission()
-  //       .then((permission) => {
-  //         if (permission === "granted") {
-  //           dispatch(AppSlice.actions.toggleNotificationModal(false));
-  //           const notification = new Notification("Notifications Enabled", {
-  //             body: "You have enabled notifications. Now you can receive real time updates.",
-  //             icon: "/images/i13logo.png",
-  //           });
-  //         } else if (permission === "denied") {
-  //           // User denied permission
-  //         } else if (permission === "default") {
-  //           // User closed the permission dialog without making a choice
-  //         }
-  //       });
-  //     }
-  //   }
-  // }, []);
+  useEffect(() => {
+    if ("Notification" in window) {
+      if (Notification.permission === "granted") {
+        // Permission is already granted, no need to show a notification
+      } else if (Notification.permission === "denied") {
+        // User denied permission, handle as needed
+      } else {
+        dispatch(AppSlice.actions.toggleNotificationModal(true));
+        // Permission is not granted; request it
+        Notification.requestPermission()
+        .then((permission) => {
+          if (permission === "granted") {
+            dispatch(AppSlice.actions.toggleNotificationModal(false));
+            const notification = new Notification("Notifications Enabled", {
+              body: "You have enabled notifications. Now you can receive real time updates.",
+              icon: "/images/i13logo.png",
+            });
+          } else if (permission === "denied") {
+            // User denied permission
+          } else if (permission === "default") {
+            // User closed the permission dialog without making a choice
+          }
+        });
+      }
+    }
+  }, []);
 
   return (
     <>
