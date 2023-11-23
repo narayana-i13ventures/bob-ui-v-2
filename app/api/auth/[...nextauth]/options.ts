@@ -26,23 +26,23 @@ export const options: NextAuthOptions = {
             }
         }),
         GoogleProvider({
-            clientId: '415317828175-tlr8pb7pj01e74pkvrlj9h8os4qtbdq2.apps.googleusercontent.com',
-            clientSecret: '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',
-            authorization: {
-                params: {
-                    prompt: "consent",
-                    access_type: "offline",
-                    response_type: "code"
-                }
-            }
+            clientId: process.env.GOOGLE_CLIENT_ID as string,
+            clientSecret: process.env.GOOGLE_SECRET as string,
+            // authorization: {
+            //     params: {
+            //         prompt: "consent",
+            //         access_type: "offline",
+            //         response_type: "code"
+            //     }
+            // }
         }),
         KeycloakProvider({
             id: 'keycloak',
             name: 'Keycloak',
-            clientId: 'bobUI',
-            clientSecret: 'p2xBq0AHi0s9CEW3qGBQnBw6XRyRLETB',
-            issuer: 'https://i13ventureskeycloak.azurewebsites.net/realms/Bob',
-            requestTokenUrl: 'https://i13ventureskeycloak.azurewebsites.net/realms/Bob/protocol/openid-connect/auth',
+            clientId: process.env.KEYCLOAK_CLIENT_ID as string,
+            clientSecret: process.env.KEYCLOAK_SECRET as string,
+            issuer: process.env.KEYCLOAK_ISSUER as string,
+            requestTokenUrl: process.env.KEYCLOAK_TOKEN_URL as string,
             authorization: {
                 params: {
                     scope: 'openid email profile',
