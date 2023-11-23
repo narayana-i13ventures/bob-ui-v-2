@@ -61,7 +61,7 @@ export default function Menu(props: any) {
     useEffect(() => {
         dispatch(fetchMenu())
     }, []);
-
+    
     useEffect(() => {
         const updatedMenu = menu?.map((method: any) => ({
             ...method,
@@ -73,9 +73,15 @@ export default function Menu(props: any) {
                 })),
             })),
         }));
+        // Check if pathName has changed for any canvas
+        const hasPathNameChanged = updatedMenu?.[0]?.frameworks.some((framework: any) => {
+            return framework.canvases.some((canvas: any) => {
+                const originalCanvas = menu?.[0]?.frameworks.find((f: any) => f.name === framework.name)?.canvases.find((c: any) => c.name === canvas.name);
+                return originalCanvas?.selected !== canvas.selected;
+            });
+        });
 
-        // Check if pathName has changed
-        if (!arePathsEqual(updatedMenu?.[0]?.frameworks, menu?.[0]?.frameworks)) {
+        if (hasPathNameChanged) {
             dispatch(updateMenu({ frameworks: updatedMenu?.[0]?.frameworks }));
         }
     }, [pathName, menu]);
@@ -91,10 +97,8 @@ export default function Menu(props: any) {
                 })),
             })),
         }));
+        router.push(`${clickedCanvas.route}`)
         dispatch(updateMenuSelected({ canvasName: clickedCanvas?.name, value: true }))
-            .then((data) => {
-                router.push(`${clickedCanvas.route}`)
-            })
     };
 
     function truncate(str: any, n: Number | any) {
