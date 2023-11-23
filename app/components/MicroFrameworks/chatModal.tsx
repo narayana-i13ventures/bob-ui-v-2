@@ -150,12 +150,12 @@ function ChatBotModal(props: any) {
         (e) => {
             e.preventDefault();
             if (chatModalOpen) {
-                dispatch(AppSlice.actions.toggleAltPressed(true));
+                dispatch(AppSlice.actions.toggleAltPressed(!altPressed));
             }
         },
-        () => {
+        (e) => {
             if (chatModalOpen) {
-                dispatch(AppSlice.actions.toggleAltPressed(true));
+                dispatch(AppSlice.actions.toggleAltPressed(!altPressed));
             }
         }
     );
@@ -531,7 +531,7 @@ function ChatBotModal(props: any) {
                                             rounded={"sm"}
                                             p={1}
                                         >
-                                            <Flex ml={2} mr={2} w={'7%'} borderRadius={'100%'} overflow={'hidden'}>
+                                            <Flex mt={3} ml={2} mr={2} w={'7%'} borderRadius={'100%'} overflow={'hidden'}>
                                                 <Image
                                                     src={
                                                         speechBubbles.role === "user"
