@@ -551,24 +551,6 @@ export async function APIfetchMenu() {
     }
 };
 
-export async function APIUpdateMenu(data: any) {
-    try {
-        const response = await fetch(`${BOB_CARDS}/Menu`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-        })
-        if (!response?.ok) {
-            throw new Error(`Failed to updateMenu`);
-        }
-        const result = await response?.json()
-        return result;
-    } catch (error: any) {
-        throw new Error(`Failed to Update Menu`);
-    }
-}
 export async function APIUpdateLock(data: any) {
     try {
         const response = await fetch(`${BOB_CARDS}/Menu/updateLock`, {

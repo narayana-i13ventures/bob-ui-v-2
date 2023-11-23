@@ -23,41 +23,17 @@ import {
 import { BiCompass } from "react-icons/bi";
 import { FaGlobeEurope } from "react-icons/fa";
 import { usePathname, useRouter } from "next/navigation";
-import { fetchMenu, menuSlice, selectMenu, updateMenu, updateMenuSelected, useDispatch, useSelector } from "@/lib/redux";
-
-
-function arePathsEqual(newFrameworks: any, oldFrameworks: any) {
-    if (!newFrameworks || !oldFrameworks || newFrameworks.length !== oldFrameworks.length) {
-        return false;
-    }
-
-    for (let i = 0; i < newFrameworks.length; i++) {
-        const newCanvases = newFrameworks[i].canvases;
-        const oldCanvases = oldFrameworks[i].canvases;
-
-        if (newCanvases.length !== oldCanvases.length) {
-            return false;
-        }
-
-        for (let j = 0; j < newCanvases.length; j++) {
-            if (newCanvases[j].route !== oldCanvases[j].route) {
-                return false;
-            }
-        }
-    }
-
-    return true;
-}
+import { fetchMenu, selectMenu, updateMenuSelected, useDispatch, useSelector } from "@/lib/redux";
 
 
 export default function Menu(props: any) {
     const { seeMenu, seeChatHistory, smallScreen, setDarkTheme, darkTheme } =
         props;
-    const pathName = usePathname();
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
     const menu = useSelector(selectMenu);
     const [doorOpen, setDoorOpen] = useState(false);
-    const router = useRouter()
+    const router = useRouter();
+
     useEffect(() => {
         dispatch(fetchMenu())
     }, []);

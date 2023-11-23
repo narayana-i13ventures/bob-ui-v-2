@@ -1,4 +1,4 @@
-import { APIfetchMenu, APIUpdateLock, APIUpdateMenu, APIUpdateSelected } from "../../apiCalls";
+import { APIfetchMenu, APIUpdateLock, APIUpdateSelected } from "../../apiCalls";
 import { createAppAsyncThunk } from "../../createAppAsyncThunk";
 
 export const fetchMenu = createAppAsyncThunk(
@@ -12,17 +12,7 @@ export const fetchMenu = createAppAsyncThunk(
         }
     }
 );
-export const updateMenu = createAppAsyncThunk(
-    'menu/updateMenu',
-    async (data: any) => {
-        try {
-            const response = await APIUpdateMenu(data);
-            return response;
-        } catch (error) {
-            throw error;
-        }
-    }
-);
+
 export const updateMenuLock = createAppAsyncThunk(
     'menu/updateMenuLock',
     async (data: any) => {
