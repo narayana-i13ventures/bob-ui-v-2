@@ -147,7 +147,7 @@ export default function MicroFrameworkWrapper({ children }: { children: React.Re
                 </Tooltip>
                 {children}
             </Flex>
-            <Tooltip label="Chat History" placement="left" hasArrow>
+            <Tooltip label="User Menu" placement="left" hasArrow>
                 <Flex
                     shadow="greenShadowLeft"
                     zIndex={1}

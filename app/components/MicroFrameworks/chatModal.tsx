@@ -59,7 +59,7 @@ function ChatBotModal(props: any) {
     const [minHeight, setMinHeight] = useState(50);
     const altPressed = useSelector(selectAltPressed);
     const bobThinking = useSelector(selectBobThinking);
-    const CVPCard = useSelector(selectedFuture1CVPCard);
+    const Future1CVPCard = useSelector(selectedFuture1CVPCard);
     const Future1BMCCard = useSelector(selectedFuture1BMCCard);
     const Future2BMCCard = useSelector(selectedFuture2BMCCard);
     const Future3BMCCard = useSelector(selectedFuture3BMCCard);
@@ -86,14 +86,14 @@ function ChatBotModal(props: any) {
         } else if (pathName === "/Future3/BMC") {
             setSelectedCard(Future3BMCCard);
         } else if (pathName === "/Future1/CVP") {
-            setSelectedCard(CVPCard);
+            setSelectedCard(Future1CVPCard);
         } else {
             setSelectedCard(null);
         }
         return () => {
             setSelectedCard(null);
         };
-    }, [pathName, Future1BMCCard, Future2BMCCard, Future3BMCCard, CVPCard]);
+    }, [pathName, Future1BMCCard, Future2BMCCard, Future3BMCCard, Future1CVPCard]);
 
     useEffect(() => {
         dispatch(fetchThinkBeyond());
@@ -243,25 +243,25 @@ function ChatBotModal(props: any) {
             ];
             if (pathName === "/Future1/BMC") {
                 dispatch(updateBMCCardsfuture1(updatedCard))
-                    .then((data) => {
+                    .then((data: any) => {
                         handleScrollToBottom();
                         streamResponse(data?.payload);
                     });
             } else if (pathName === "/Future2/BMC") {
                 dispatch(updateBMCCardsfuture2(updatedCard))
-                    .then((data) => {
+                    .then((data: any) => {
                         handleScrollToBottom();
                         streamResponse(data?.payload);
                     });
             } else if (pathName === "/Future3/BMC") {
                 dispatch(updateBMCCardsfuture3(updatedCard))
-                    .then((data) => {
+                    .then((data: any) => {
                         handleScrollToBottom();
                         streamResponse(data?.payload);
                     });
             } else if (pathName === "/Future1/CVP") {
                 dispatch(updateCVPCardsfuture1(updatedCard))
-                    .then((data) => {
+                    .then((data: any) => {
                         handleScrollToBottom();
                         streamResponse(data?.payload);
                     });

@@ -12,6 +12,7 @@ import {
     Divider,
     Avatar,
     Spinner,
+    Image
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { BsChat } from "react-icons/bs";
@@ -35,6 +36,15 @@ import {
     fetchBMCCardsfuture3Chat,
     Future2BMCReset,
     Future3BMCReset,
+    updateBMCCardsfuture2,
+    updateBMCCardsfuture3,
+    updateCVPCardsfuture1,
+    updateBMCCardsfuture1,
+    selectedFuture1BMCCard,
+    selectedFuture2BMCCard,
+    selectedFuture3BMCCard,
+    selectedFuture1CVPCard,
+    AppSlice,
 } from "@/lib/redux";
 import { usePathname } from "next/navigation";
 import { IconContext } from "react-icons";
@@ -52,10 +62,18 @@ export default function ChatHistory(props: any) {
     const { data: Future1BMCCards } = useSelector(selectBMCFuture1);
     const { data: Future2BMCCards } = useSelector(selectBMCFuture2);
     const { data: Future3BMCCards } = useSelector(selectBMCFuture3);
-    const { data: CVPCards } = useSelector(selectCVP);
+    const Future1BMCCard = useSelector(selectedFuture1BMCCard);
+    const Future2BMCCard = useSelector(selectedFuture2BMCCard);
+    const Future3BMCCard = useSelector(selectedFuture3BMCCard);
+    const Future1CVPCard = useSelector(selectedFuture1CVPCard)
+    const { data: Future1CVPCards } = useSelector(selectCVP);
     const { data: session }: { data: any } = useSession({
         required: true,
     });
+
+    const [selectedCard, setSelectedCard] = useState<any>(null);
+
+
     useEffect(() => {
         if (pathName === "/Future1/BMC") {
             setConversation(Future1BMCConversation);
@@ -80,7 +98,29 @@ export default function ChatHistory(props: any) {
         } else if (pathName === "/Future1/CVP") {
             dispatch(fetchCVPCardsfuture1Chat())
         }
-    }, [pathName, Future1BMCCards, Future2BMCCards, Future3BMCCards, CVPCards]);
+    }, [pathName, Future1BMCCards, Future2BMCCards, Future3BMCCards, Future1CVPCards]);
+
+
+
+
+
+    useEffect(() => {
+        if (pathName === "/Future1/BMC") {
+            setSelectedCard(Future1BMCCard);
+        } else if (pathName === "/Future2/BMC") {
+            setSelectedCard(Future2BMCCard);
+        } else if (pathName === "/Future3/BMC") {
+            setSelectedCard(Future3BMCCard);
+        } else if (pathName === "/Future1/CVP") {
+            setSelectedCard(Future1CVPCard);
+        } else {
+            setSelectedCard(null);
+        }
+        return () => {
+            setSelectedCard(null);
+        };
+    }, [pathName, Future1BMCCard, Future2BMCCard, Future3BMCCard, Future1CVPCard]);
+
     const resetCanvas = () => {
         if (pathName === "/Future1/BMC") {
             dispatch(Future1BMCReset())
@@ -92,7 +132,59 @@ export default function ChatHistory(props: any) {
             dispatch(Future1CVPReset())
         }
     }
-
+    function continueChat(cardName: any) {
+        if (selectedCard) {
+            const updatedSelectedCard = { ...selectedCard, selected: false };
+            if (pathName === "/Future1/BMC") {
+                const card = Future1BMCCards.find((card: any) => card.cardName === cardName)
+                dispatch(updateBMCCardsfuture1(updatedSelectedCard)).then(
+                    (data: any) => {
+                        const updatedCard = { ...card, selected: true };
+                        dispatch(updateBMCCardsfuture1(updatedCard))
+                            .then((data) => {
+                                dispatch(AppSlice.actions.toggleChatModal(true))
+                            });
+                    }
+                );
+            }
+            if (pathName === "/Future2/BMC") {
+                const card = Future2BMCCards.find((card: any) => card.cardName === cardName)
+                dispatch(updateBMCCardsfuture2(updatedSelectedCard)).then(
+                    (data: any) => {
+                        const updatedCard = { ...card, selected: true };
+                        dispatch(updateBMCCardsfuture2(updatedCard))
+                            .then((data) => {
+                                dispatch(AppSlice.actions.toggleChatModal(true))
+                            });
+                    }
+                );
+            }
+            if (pathName === "/Future3/BMC") {
+                const card = Future3BMCCards.find((card: any) => card.cardName === cardName)
+                dispatch(updateBMCCardsfuture3(updatedSelectedCard)).then(
+                    (data: any) => {
+                        const updatedCard = { ...card, selected: true };
+                        dispatch(updateBMCCardsfuture3(updatedCard))
+                            .then((data) => {
+                                dispatch(AppSlice.actions.toggleChatModal(true))
+                            });
+                    }
+                );
+            }
+            if (pathName === "/Future1/CVP") {
+                const card = Future1CVPCards.find((card: any) => card.cardName === cardName)
+                dispatch(updateCVPCardsfuture1(updatedSelectedCard)).then(
+                    (data: any) => {
+                        const updatedCard = { ...card, selected: true };
+                        dispatch(updateCVPCardsfuture1(updatedCard))
+                            .then((data) => {
+                                dispatch(AppSlice.actions.toggleChatModal(true))
+                            });
+                    }
+                );
+            }
+        }
+    }
     return (
 
         <>
@@ -122,7 +214,7 @@ export default function ChatHistory(props: any) {
                     <>
                         <Flex alignItems={"center"} pb={3} px={3} direction={"column"}>
                             <Text fontSize={'md'} my={3} fontWeight={'semibold'}>Hello {session?.user?.name}</Text>
-                            <Button my={3}  onClick={() => signOut()} w={'full'} variant={'solid'} colorScheme="green">
+                            <Button my={3} onClick={() => signOut({ callbackUrl: '/ThinkBeyond' })} w={'full'} variant={'solid'} colorScheme="green">
                                 Sign Out
                             </Button>
                             <Button onClick={resetCanvas} w={'full'} variant={'solid'} colorScheme="green">
@@ -170,7 +262,7 @@ export default function ChatHistory(props: any) {
                                                 size={"sm"}
                                                 mb={3}
                                                 rightIcon={<Icon as={BsChat} />}
-                                            // onClick={() => continueChat(conv.cardName)}
+                                                onClick={() => continueChat(conv.cardName)}
                                             >
                                                 Continue Chat
                                             </Button>
@@ -185,15 +277,22 @@ export default function ChatHistory(props: any) {
                                                     h="100%"
                                                     key={index}
                                                 >
-                                                    <Flex alignItems={"center"} mr={2} direction={"column"}>
-                                                        <Avatar
-                                                            boxSize={10}
-                                                            src={
-                                                                speechBubbles.role === "user"
-                                                                    ? "/images/user.png"
-                                                                    : "/images/bob.png"
-                                                            }
-                                                        />
+                                                    <Flex w={'15%'} alignItems={"center"} mr={2} direction={"column"}>
+                                                        <div style={{ height: '40px', width: '40px' }}>
+                                                            <Image
+                                                                src={
+                                                                    speechBubbles.role === "user"
+                                                                        ? `${session?.user?.image}`
+                                                                        : "/images/bob.png"
+                                                                }
+                                                                borderRadius={'100%'}
+                                                                overflow={'hidden'}
+                                                                w={'100%'}
+                                                                maxWidth={'100%'}
+                                                                referrerPolicy="no-referrer"
+                                                                style={{ objectFit: "cover", height: "100%" }}
+                                                            />
+                                                        </div>
                                                         <Divider
                                                             orientation="vertical"
                                                             borderColor="blue.200"
@@ -201,7 +300,9 @@ export default function ChatHistory(props: any) {
                                                             borderRadius={10}
                                                         />
                                                     </Flex>
+
                                                     <Text
+                                                        width={'85%'}
                                                         fontSize={["2xs", "xs", "sm", "sm", "md", "md"]}
                                                         wordBreak={"break-word"}
                                                         maxWidth="100%"
