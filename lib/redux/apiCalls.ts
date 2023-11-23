@@ -524,3 +524,84 @@ export async function APIResetFuture1CVP() {
         throw new Error(`Failed to Reset Future1 CVP`);
     }
 }
+
+
+
+
+
+export async function APIfetchMenu() {
+    try {
+        const response = await fetch(`${BOB_CARDS}/Menu`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            next: {
+                tags: ['Menu']
+            }
+        });
+
+        if (!response?.ok) {
+            throw new Error('Failed to Menu');
+        }
+        const result = await response?.json();
+        return result;
+    } catch (error) {
+        throw new Error('Failed to Menu');
+    }
+};
+
+export async function APIUpdateMenu(data: any) {
+    try {
+        const response = await fetch(`${BOB_CARDS}/Menu`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        if (!response?.ok) {
+            throw new Error(`Failed to updateMenu`);
+        }
+        const result = await response?.json()
+        return result;
+    } catch (error: any) {
+        throw new Error(`Failed to Update Menu`);
+    }
+}
+export async function APIUpdateLock(data: any) {
+    try {
+        const response = await fetch(`${BOB_CARDS}/Menu/updateLock`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        if (!response?.ok) {
+            throw new Error(`Failed to update Menu lock`);
+        }
+        const result = await response?.json()
+        return result;
+    } catch (error: any) {
+        throw new Error(`Failed to update Menu lock`);
+    }
+}
+export async function APIUpdateSelected(data: any) {
+    try {
+        const response = await fetch(`${BOB_CARDS}/Menu/updateSelected`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        if (!response?.ok) {
+            throw new Error(`Failed to update Menu Selected`);
+        }
+        const result = await response?.json()
+        return result;
+    } catch (error: any) {
+        throw new Error(`Failed to update Menu Selected`);
+    }
+}

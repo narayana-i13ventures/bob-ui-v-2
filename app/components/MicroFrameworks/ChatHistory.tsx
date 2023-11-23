@@ -45,6 +45,7 @@ import {
     selectedFuture3BMCCard,
     selectedFuture1CVPCard,
     AppSlice,
+    updateMenuLock,
 } from "@/lib/redux";
 import { usePathname } from "next/navigation";
 import { IconContext } from "react-icons";
@@ -77,6 +78,7 @@ export default function ChatHistory(props: any) {
     useEffect(() => {
         if (pathName === "/Future1/BMC") {
             setConversation(Future1BMCConversation);
+            dispatch(updateMenuLock({ canvasName: "Value Proposisition Canvas", value: true }))
         } else if (pathName === "/Future2/BMC") {
             setConversation(Future2BMCConversation);
         } else if (pathName === "/Future3/BMC") {

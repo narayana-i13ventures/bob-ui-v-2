@@ -23,6 +23,7 @@ import {
   selectedFuture2BMCCard,
   AppSlice,
   selectChatBotModal,
+  updateMenuLock,
 } from "@/lib/redux";
 import {
   Flex,
@@ -124,7 +125,7 @@ const BMCCanvas = () => {
             dispatch(Future1CVPPrefill(data))
               .then((data) => {
                 dispatch(AppSlice.actions.toggleMessageModal(false))
-                dispatch(menuSlice.actions.toggleCanvasLocked({ canvasName: 'Value Proposisition Canvas', value: false }))
+                dispatch(updateMenuLock({canvasName:"Value Proposisition Canvas" , value:false}))
                 if ("Notification" in window) {
                   if (Notification.permission === "granted") {
                     const notification = new Notification("CVP Canvas Unlocked", {

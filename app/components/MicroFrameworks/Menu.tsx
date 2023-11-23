@@ -23,7 +23,32 @@ import {
 import { BiCompass } from "react-icons/bi";
 import { FaGlobeEurope } from "react-icons/fa";
 import { usePathname, useRouter } from "next/navigation";
-import { menuSlice, selectMenu, useDispatch, useSelector } from "@/lib/redux";
+import { fetchMenu, selectMenu, updateMenu, updateMenuSelected, useDispatch, useSelector } from "@/lib/redux";
+
+
+function arePathsEqual(newFrameworks: any, oldFrameworks: any) {
+    if (!newFrameworks || !oldFrameworks || newFrameworks.length !== oldFrameworks.length) {
+        return false;
+    }
+
+    for (let i = 0; i < newFrameworks.length; i++) {
+        const newCanvases = newFrameworks[i].canvases;
+        const oldCanvases = oldFrameworks[i].canvases;
+
+        if (newCanvases.length !== oldCanvases.length) {
+            return false;
+        }
+
+        for (let j = 0; j < newCanvases.length; j++) {
+            if (newCanvases[j].route !== oldCanvases[j].route) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
 
 export default function Menu(props: any) {
     const { seeMenu, seeChatHistory, smallScreen, setDarkTheme, darkTheme } =
@@ -32,6 +57,10 @@ export default function Menu(props: any) {
     const dispatch = useDispatch()
     const menu = useSelector(selectMenu);
     const [doorOpen, setDoorOpen] = useState(false);
+    const router = useRouter()
+    useEffect(() => {
+        dispatch(fetchMenu())
+    }, []);
 
     useEffect(() => {
         const updatedMenu = menu?.map((method: any) => ({
@@ -44,8 +73,12 @@ export default function Menu(props: any) {
                 })),
             })),
         }));
-        dispatch(menuSlice.actions.setCanvas(updatedMenu))
-    }, [pathName]);
+
+        // Check if pathName has changed
+        if (!arePathsEqual(updatedMenu?.[0]?.frameworks, menu?.[0]?.frameworks)) {
+            dispatch(updateMenu({ frameworks: updatedMenu?.[0]?.frameworks }));
+        }
+    }, [pathName, menu]);
 
     const handleCanvasClick = (clickedCanvas: any) => {
         const updatedMenu = menu?.map((method: any) => ({
@@ -58,7 +91,10 @@ export default function Menu(props: any) {
                 })),
             })),
         }));
-        dispatch(menuSlice.actions.setCanvas(updatedMenu))
+        dispatch(updateMenuSelected({ canvasName: clickedCanvas?.name, value: true }))
+            .then((data) => {
+                router.push(`${clickedCanvas.route}`)
+            })
     };
 
     function truncate(str: any, n: Number | any) {
@@ -78,7 +114,7 @@ export default function Menu(props: any) {
         >
             <Flex direction="column">
                 <Image m={"15px"} src="/images/i13logo.png" alt="i13logo" />
-                {menu.map((methodology) => (
+                {menu?.map((methodology: any) => (
                     <Accordion allowToggle key={methodology.methodology} index={0}>
                         <AccordionItem>
                             <AccordionButton>
@@ -116,7 +152,7 @@ export default function Menu(props: any) {
                                 </LinkBox>
                             </AccordionButton>
                             <AccordionPanel pb={4}>
-                                {methodology.frameworks.map((framework: any) => (
+                                {methodology?.frameworks.map((framework: any) => (
                                     <Accordion allowToggle key={framework.name} index={0}>
                                         <AccordionItem>
                                             <AccordionButton>
@@ -140,38 +176,36 @@ export default function Menu(props: any) {
                                                         placement="right"
                                                         hasArrow
                                                     >
-                                                        <Link href={canvas?.route}>
-                                                            <Button
-                                                                colorScheme={canvas.selected ? "green" : "gray"}
-                                                                leftIcon={
-                                                                    canvas.locked ? (
-                                                                        <Icon
-                                                                            boxSize={[4, 4, 4, 4, 5, 6]}
-                                                                            as={BsShieldLock}
-                                                                        />
-                                                                    ) : (
-                                                                        <Image
-                                                                            boxSize={[4, 4, 4, 5, 6, 7]}
-                                                                            src={"/images/white fire gif.gif"}
-                                                                            style={{ filter: "hue-rotate(0deg)" }}
-                                                                        ></Image>
-                                                                    )
-                                                                }
-                                                                variant={canvas.selected ? "solid" : "ghost"}
-                                                                size={["xs", "xs", "xs", "xs", "xs", "sm"]}
-                                                                mb={2}
-                                                                opacity={canvas.locked ? 0.5 : 1}
-                                                                cursor={canvas.locked ? "not-allowed" : "pointer"}
-                                                                disabled={canvas.locked}
-                                                                onClick={() => handleCanvasClick(canvas)}
-                                                            >
-                                                                {smallScreen
-                                                                    ? truncate(canvas.name, 12)
-                                                                    : seeChatHistory
-                                                                        ? truncate(canvas.name, 28)
-                                                                        : canvas.name}
-                                                            </Button>
-                                                        </Link>
+                                                        <Button
+                                                            colorScheme={canvas.selected ? "green" : "gray"}
+                                                            leftIcon={
+                                                                canvas.locked ? (
+                                                                    <Icon
+                                                                        boxSize={[4, 4, 4, 4, 5, 6]}
+                                                                        as={BsShieldLock}
+                                                                    />
+                                                                ) : (
+                                                                    <Image
+                                                                        boxSize={[4, 4, 4, 5, 6, 7]}
+                                                                        src={"/images/white fire gif.gif"}
+                                                                        style={{ filter: "hue-rotate(0deg)" }}
+                                                                    ></Image>
+                                                                )
+                                                            }
+                                                            variant={canvas.selected ? "solid" : "ghost"}
+                                                            size={["xs", "xs", "xs", "xs", "xs", "sm"]}
+                                                            mb={2}
+                                                            opacity={canvas.locked ? 0.5 : 1}
+                                                            cursor={canvas.locked ? "not-allowed" : "pointer"}
+                                                            disabled={canvas.locked}
+                                                            onClick={() => handleCanvasClick(canvas)}
+                                                        >
+                                                            {smallScreen
+                                                                ? truncate(canvas.name, 12)
+                                                                : seeChatHistory
+                                                                    ? truncate(canvas.name, 28)
+                                                                    : canvas.name}
+                                                        </Button>
                                                     </Tooltip>
                                                 ))}
                                             </AccordionPanel>
