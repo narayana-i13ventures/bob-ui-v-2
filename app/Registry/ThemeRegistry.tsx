@@ -1,6 +1,6 @@
 'use client';
 import { CacheProvider } from '@chakra-ui/next-js';
-import { ChakraProvider, extendTheme } from '@chakra-ui/react';
+import { ChakraProvider, Flex, extendTheme, useMediaQuery, Text } from '@chakra-ui/react';
 import { StepsTheme as Steps } from "chakra-ui-steps";
 import { Notifications } from 'react-push-notification';
 const shadows = {
@@ -22,11 +22,20 @@ export function Providers({
 }: {
     children: React.ReactNode
 }) {
+    const [smallScreen] = useMediaQuery('(max-width: 1024px)')
+    const [isMobile] = useMediaQuery('(max-width: 768px)')
     return (
         <CacheProvider>
             <ChakraProvider theme={theme}>
-            <Notifications />
-                {children}
+                <Notifications />
+                {(smallScreen || isMobile) ? <>
+                    <Flex p={3} justifyContent={'center'} alignItems={'center'} height={'100vh'} width={'100vw'}>
+                        <Text textAlign={'center'} fontSize={'lg'}>For Best Experience Please use Desktop Version to Interact with Bob</Text>
+                    </Flex>
+                </>
+                    : <>
+                        {children}
+                    </>}
             </ChakraProvider>
         </CacheProvider>
     );
