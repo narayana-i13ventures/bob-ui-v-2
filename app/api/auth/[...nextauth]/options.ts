@@ -85,36 +85,37 @@ export const options: NextAuthOptions = {
     secret: process.env.NEXTAUTH_SECRET as string,
     callbacks: {
         async jwt({ token, account }: any) {
-            const nowTimeStamp = Math.floor(Date.now() / 1000);
-            if (account) {
-                token.decoded = jwtDecode(account.access_token);
-                token.access_token = account.access_token;
-                token.id_token = account.id_token;
-                token.expires_at = account.expires_at;
-                token.refresh_token = account.refresh_token;
-                return token;
-            } else if (nowTimeStamp < token.expires_at) {
-                // token has not expired yet, return it
-                console.log("Token not expired")
-                return token;
-            } else {
-                return token
-                // token is expired, try to refresh it
-                console.log("Token has expired. Will refresh...")
-                try {
-                    const refreshedToken = await refreshAccessToken(token);
-                    console.log("Token is refreshed.");
-                    return refreshedToken;
-                } catch (error) {
-                    console.error("Error refreshing access token", error);
-                    return { ...token, error: "RefreshAccessTokenError" };
-                }
-            }
+            // const nowTimeStamp = Math.floor(Date.now() / 1000);
+            // if (account) {
+            //     token.decoded = jwtDecode(account.access_token);
+            //     token.access_token = account.access_token;
+            //     token.id_token = account.id_token;
+            //     token.expires_at = account.expires_at;
+            //     token.refresh_token = account.refresh_token;
+            //     return token;
+            // } else if (nowTimeStamp < token.expires_at) {
+            //     // token has not expired yet, return it
+            //     console.log("Token not expired")
+            //     return token;
+            // } else {
+            //     return token
+            //     // token is expired, try to refresh it
+            //     console.log("Token has expired. Will refresh...")
+            //     try {
+            //         const refreshedToken = await refreshAccessToken(token);
+            //         console.log("Token is refreshed.");
+            //         return refreshedToken;
+            //     } catch (error) {
+            //         console.error("Error refreshing access token", error);
+            //         return { ...token, error: "RefreshAccessTokenError" };
+            //     }
+            // }
+            return token
         },
         async session({ session, user, token }: any) {
-            session.access_token = encrypt(token?.access_token);
-            session.id_token = encrypt(token?.id_token);
-            session.roles = token?.decoded?.realm_access?.roles;
+            // session.access_token = encrypt(token?.access_token);
+            // session.id_token = encrypt(token?.id_token);
+            // session.roles = token?.decoded?.realm_access?.roles;
             return session
         },
     }
