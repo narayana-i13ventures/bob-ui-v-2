@@ -22,18 +22,9 @@ const UserMenu = (props: any) => {
     const dispatch = useDispatch();
     const { data }: any = useSession();  
     const { profileMenu }: { profileMenu: any } = useSelector(selectApp);
-    const keycloakSessionLogout = async () => {
-        try {
-            await fetch('/api/auth/logout', { method: 'GET' });
-        } catch (error) {
-            console.log(error);
-        }
-    }
+
     const handleSignOut = () => {
-        keycloakSessionLogout()
-            .then((data: any) => {
-                signOut({ callbackUrl: '/' });
-            })
+        signOut({ callbackUrl: '/' });
     };
 
     return (
