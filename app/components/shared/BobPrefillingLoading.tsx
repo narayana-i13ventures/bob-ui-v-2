@@ -38,9 +38,6 @@ export default function BobPrefillingLoading(props: any) {
                 loop={true}
             />
             <p
-                style={{
-                    color
-                }}
                 className='my-2 font-semibold !text-2xl'>
                 {texts[currentTextIndex]}
             </p>
