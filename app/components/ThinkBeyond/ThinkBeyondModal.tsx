@@ -1,169 +1,287 @@
-/* eslint-disable react/no-unescaped-entities */
-
-import {
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalFooter,
-    ModalBody,
-    ModalCloseButton,
-    Flex,
-    Text,
-    Textarea,
-    Button,
-    Kbd,
-} from "@chakra-ui/react";
-
-import {
-    useSelector,
-    useDispatch,
-    thinkBeyondSlice,
-    updateThinkBeyond,
-    selectedThinkBeyondCard,
-    selectBobThinking,
-    selectAltPressed,
-    selectDarkTheme,
-    AppSlice
-} from '@/lib/redux';
-
-import { ChangeEvent, useEffect, useState } from "react";
+import React, { JSXElementConstructor, ChangeEvent } from "react";
+import Slide from "@mui/material/Slide";
+import Dialog from "@mui/material/Dialog";
 import { useKeyPressEvent } from "react-use";
-import { CardInfo } from "@/app/Interfaces";
+import CloseIcon from "@mui/icons-material/Close";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import { TransitionProps } from "@mui/material/transitions";
+import {
+    appSlice,
+    selectApp,
+    useDispatch,
+    useSelector,
+    thinkBeyondSlice,
+    notificationSlice,
+    selectBobMessages,
+    selectedThinkBeyondCard,
+} from "@/lib/redux";
+import KBD from "../shared/KBD";
+import { fetchPrefillData } from "@/lib/redux/slices/ApiCalls";
+import { Button, DialogActions, IconButton, TextField } from "@mui/material";
+import {
+    useGetCompanyByIdQuery,
+    useNextThinkBeyondMutation,
+    usePrefillFuture1BMCMutation,
+} from "@/lib/redux/Api";
+import { useParams } from "next/navigation";
 
-export default function ThinkBeyondModal(props: any) {
-    const {
-        isOpen,
-        onClose,
-        nextCard,
-    } = props;
+const Transition = React.forwardRef(function Transition(
+    props: TransitionProps & {
+        children: React.ReactElement<unknown, JSXElementConstructor<unknown>>;
+    },
+    ref: React.Ref<unknown>
+) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
+
+const ThinkBeyondModal = (props: any) => {
     const dispatch = useDispatch();
-    const altPressed = useSelector(selectAltPressed);
-    const bobIsThinking = useSelector(selectBobThinking);
-    const darkTheme = useSelector(selectDarkTheme);
-    const selectedCard: any = useSelector(selectedThinkBeyondCard);
+    const { projectId } = useParams();
+    const {
+        data: company,
+        isLoading: companyLoading,
+        isError: companyError,
+    } = useGetCompanyByIdQuery(projectId);
+    const BobMessages = useSelector(selectBobMessages);
+    const [setNextCard] = useNextThinkBeyondMutation();
+    const selectedCard = useSelector(selectedThinkBeyondCard);
+    const [prefillFuture1BMC] = usePrefillFuture1BMCMutation();
+    const { ThinkBeyondModalOpen }: any = useSelector(selectApp);
 
-    useEffect(() => {
-        if (isOpen) {
-            const updatedCard = { ...selectedCard, open: isOpen };
-            dispatch(updateThinkBeyond(updatedCard));
-        }
-    }, [isOpen]);
-
-    useKeyPressEvent(
-        "Alt",
-        (e) => {
-            e.preventDefault();
-            if (!bobIsThinking && isOpen) {
-                dispatch(updateThinkBeyond(selectedCard)).then((_data) => {
-                    dispatch(AppSlice.actions.toggleAltPressed(true));
-                });
-            }
-        },
-        () => {
-            if (isOpen) {
-                dispatch(updateThinkBeyond(selectedCard)).then((_data) => {
-                    dispatch(AppSlice.actions.toggleAltPressed(true));
-                });
-            }
-        }
-    );
-
-    const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>, heading: string) => {
+    const handleInputChange = (
+        e: ChangeEvent<HTMLTextAreaElement>,
+        heading: string
+    ) => {
         const updatedText = e?.target?.value;
-        dispatch(thinkBeyondSlice.actions.updateText({ heading, text: updatedText }));
+        dispatch(
+            thinkBeyondSlice.actions.updateText({ heading, text: updatedText })
+        );
     };
 
-    function closeModal() {
-        dispatch(updateThinkBeyond(selectedCard)).then((_data) => {
-            onClose();
-        });;
+    const handleClose = () => {
+        dispatch(appSlice.actions.toggleThinkBeyondModalOpen(false));
     };
 
-    function goNext() {
-        dispatch(updateThinkBeyond(selectedCard)).then((_data) => {
-            nextCard(selectedCard);
-        });
+    const nextCard = () => {
+        if (selectedCard.cardName === "Future 1 (OKRs)") {
+            dispatch(appSlice.actions.toggleThinkBeyondModalOpen(false));
+            dispatch(appSlice.actions.toggleBobPrefillingOpen(true));
+            setNextCard(selectedCard);
+            dispatch(
+                notificationSlice.actions.createNotification({
+                    content: "Congratulations!! You Have Unlocked Microframeworks",
+                    action: "Microframeworks",
+                })
+            );
+            fetchPrefillData(
+                "https://bobapi.i13ventures.com/v1/bmc/prefill",
+                props?.prefillBody
+            ).then((data: any) => {
+                prefillFuture1BMC(data)
+                    .unwrap()
+                    .then((data) => {
+                        dispatch(appSlice.actions.toggleBobPrefillingOpen(false));
+                        dispatch(appSlice.actions.toggleConfirmationModalOpen(true));
+                        fetch("https://bobapi.i13ventures.com/v1/bmc/sendmail", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                                data: {
+                                    name: "Narayana Lvsaln",
+                                    project: "i13 ventures",
+                                    canvas: "Business Model Canvas",
+                                },
+                                email: "narayana@i13ventures.com",
+                            }),
+                        });
+                    });
+
+                //  if ("Notification" in window) {
+                //      if (Notification.permission === "granted") {
+                //          const notification = new Notification("BMC Canvas Unlocked", {
+                //              body: "Bob Completed Creating your canvas.",
+                //              icon: "/images/i13logo.png",
+                //          });
+                //          notification.onclick = () => {
+                //              router.push(`/Future1/BMC`)
+                //          }
+                //      }
+                //  }
+            });
+        } else {
+            setNextCard(selectedCard)
+                .unwrap()
+                .then((data) => {
+                    dispatch(appSlice.actions.toggleThinkBeyondModalOpen(false));
+                });
+        }
     };
 
+    useKeyPressEvent("Alt", (e: any) => {
+        e.preventDefault();
+        if (ThinkBeyondModalOpen) {
+            addMessage();
+        }
+    });
+    const handleAskBobHelp = () => {
+        if (ThinkBeyondModalOpen) {
+            addMessage();
+        }
+    };
+    async function addMessage() {
+        if (!companyLoading && !companyError) {
+            const data: any = {
+                cardIndex: selectedCard?.cardNumber,
+                card: selectedCard?.cardInfo,
+                company: {
+                    ...company,
+                    shared: undefined,
+                    id: undefined,
+                    createdAt: undefined,
+                },
+                bobMessages: BobMessages?.slice(
+                    Math.max(BobMessages.length - 5, 0)
+                ).map((message: any) => message.content),
+            };
+
+            const cardIsEmpty =
+                selectedCard?.cardInfo?.reduce(
+                    (acc: any, curr: any) => acc + curr.text,
+                    ""
+                ).length === 0 || !selectedCard;
+            if (cardIsEmpty) {
+                dispatch(
+                    appSlice.actions.setGlobalSnackBar({
+                        open: true,
+                        content: "Card is Empty",
+                    })
+                );
+                return;
+            }
+            dispatch(appSlice.actions.toggleBobThinking(true));
+            dispatch(thinkBeyondSlice.actions.setBobMessages());
+            dispatch(appSlice.actions.toggleBobOpen(true));
+            try {
+                const apiUrl =
+                    "https://bobapi.i13ventures.com/v1/think_beyond/suggestion";
+                if (data) {
+                    const response = await fetch(apiUrl, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(data),
+                    });
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    const responseData = await response.json();
+                    dispatch(
+                        thinkBeyondSlice.actions.updateBobMessages(responseData?.message)
+                    );
+                } else {
+                    dispatch(
+                        appSlice.actions.setGlobalSnackBar({
+                            open: true,
+                            content: "Data Not Present",
+                        })
+                    );
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                dispatch(thinkBeyondSlice.actions.removeBobMessages());
+                dispatch(
+                    appSlice.actions.setGlobalSnackBar({
+                        open: true,
+                        content: "Bob is Not Able to think",
+                    })
+                );
+            } finally {
+                dispatch(appSlice.actions.toggleBobThinking(false));
+            }
+        }
+    }
     return (
-        <Modal isOpen={isOpen} onClose={closeModal} size="xl">
-            <ModalOverlay />
-            <ModalContent
-                mx="auto"
-                my="auto"
-                shadow={'whiteShadow'}
-                maxH="80vh"
-                bg={darkTheme ? "gray.900" : "white"}
+        <>
+            <Dialog
+                TransitionComponent={Transition}
+                keepMounted
+                // fullScreen
+                maxWidth={"sm"}
+                fullWidth
+                disableEscapeKeyDown
+                open={ThinkBeyondModalOpen}
+                aria-labelledby="think-beyond-modal"
+                aria-describedby="think-beyond-modal-description"
             >
-                <ModalHeader>
-                    <Text color={darkTheme ? "white" : "black"}>{selectedCard?.cardName}</Text>
-                    <Text color={darkTheme ? "white" : "black"} fontSize={"lg"}>
-                        {selectedCard?.cardSubName}
-                    </Text>
-                </ModalHeader>
-                <ModalCloseButton />
-                <ModalBody overflowY={"scroll"}>
-                    <Flex direction="column" gap="10px">
-                        {selectedCard?.cardInfo?.map((info: CardInfo, index: number) => (
-                            <Flex direction={"column"} gap={"10px"} key={index}>
-                                <Text color={darkTheme ? "white" : "black"}>
-                                    {info.heading}
-                                </Text>
-                                <Textarea
-                                    bg={darkTheme ? "gray.800" : "white"}
-                                    color={darkTheme ? "white" : "black"}
-                                    rounded="md"
-                                    // onFocus={() => setFocused(info.heading)}
+                <DialogTitle
+                    id="project-modal-title"
+                    className="flex justify-between items-center"
+                >
+                    {selectedCard?.cardName}
+                    <IconButton size="small" onClick={handleClose}>
+                        <CloseIcon />
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent className="scrollbar-thin !scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                    {selectedCard?.cardInfo?.map((info: any, index: number) => {
+                        return (
+                            <div key={index}>
+                                <p className="text-lg mt-5 mb-2">{info?.heading}</p>
+                                <TextField
+                                    id={`think-beyond-answer-${index}`}
+                                    placeholder={info?.placeholder}
+                                    multiline
+                                    fullWidth
                                     value={info?.text}
-                                    onChange={(e) => handleInputChange(e, info.heading)}
-                                    h="20vh"
-                                    size="sm"
-                                    placeholder={info.placeholder}
+                                    minRows={4}
+                                    maxRows={4}
+                                    onChange={(e: any) => handleInputChange(e, info.heading)}
                                 />
-                            </Flex>
-                        ))}
-                    </Flex>
-                </ModalBody>
-                <ModalFooter>
-                    <Flex
-                        me={4}
-                        ms={1}
-                        w="100%"
-                        alignItems={"center"}
-                        justifyContent={"space-between"}
-                    >
-                        <Flex animation={altPressed ? "pulse 1s infinite" : "none"}>
-                            <Kbd colorScheme="blue" size="xs">
-                                Alt
-                            </Kbd>
-                            <Text
-                                color={
-                                    altPressed && !darkTheme
-                                        ? "blue.600"
-                                        : darkTheme
-                                            ? "white"
-                                            : "gray.400"
-                                }
-                                fontSize="xs"
-                                p={1}
-                                rounded="md"
-                                fontWeight={"semibold"}
+                            </div>
+                        );
+                    })}
+                </DialogContent>
+                <DialogActions className="!px-5 !py-5">
+                    <div className="flex justify-between items-end w-full">
+                        <div>
+                            <div className="text-xs text-neutral-500 mb-3 font-semibold">
+                                Press
+                                <KBD>Alt</KBD>
+                                to ask Bob's Help
+                            </div>
+                            <Button
+                                onClick={handleAskBobHelp}
+                                className="!font-semibold !capitalize"
+                                variant="outlined"
                             >
-                                Hold 'Alt' to get help from Bob
-                            </Text>
-                        </Flex>
-                        <Button
-                            colorScheme="green"
-                            isDisabled={!selectedCard?.complete}
-                            onClick={goNext}
-                        >
-                            Next
-                        </Button>
-                    </Flex>
-                </ModalFooter>
-            </ModalContent>
-        </Modal>
+                                Ask Bob's Help
+                            </Button>
+                        </div>
+                        <div>
+                            <Button
+                                onClick={handleClose}
+                                className="!font-semibold !capitalize w-[100px] !mr-3"
+                                variant="outlined"
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                onClick={nextCard}
+                                className="!font-semibold !capitalize !text-white w-[100px]"
+                                variant="contained"
+                            >
+                                Save
+                            </Button>
+                        </div>
+                    </div>
+                </DialogActions>
+            </Dialog>
+        </>
     );
-}
+};
 
+export default ThinkBeyondModal;

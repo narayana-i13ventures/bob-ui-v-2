@@ -1,20 +1,23 @@
+/* Core */
 import { createLogger } from 'redux-logger'
+import { apiSlice } from './Api'
 
-const middleware = [
-  createLogger({
-    duration: true,
-    timestamp: false,
-    collapsed: true,
-    colors: {
-      title: () => '#139BFE',
-      prevState: () => '#1C5FAF',
-      action: () => '#149945',
-      nextState: () => '#A47104',
-      error: () => '#ff0005',
-    },
-    predicate: () => typeof window !== 'undefined',
-    diff: true, // Add this line to show state diff
-  }),
+const middleware: any[] = [
+  // createLogger({
+  // duration: true,
+  // timestamp: false,
+  // collapsed: true,
+  // colors: {
+  //   title: () => '#139BFE',
+  //   prevState: () => '#1C5FAF',
+  //   action: () => '#149945',
+  //   nextState: () => '#A47104',
+  //   error: () => '#ff0005',
+  // },
+  // predicate: () => typeof window !== 'undefined',
+  // }),
 ]
 
-export { middleware }
+const allMiddleware = [apiSlice.middleware, ...middleware];
+
+export { allMiddleware };

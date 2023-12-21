@@ -1,15 +1,7 @@
-import type { ReduxState } from '@/lib/redux'
-import { createSelector } from '@reduxjs/toolkit';
+import type { ReduxState } from "@/lib/redux";
 
-const selectThinkBeyondData = (state: ReduxState) => state.thinkBeyond.data;
-const selectThinkBeyondLoading = (state: ReduxState) => state.thinkBeyond.loading;
-const selectThinkBeyondError = (state: ReduxState) => state.thinkBeyond.error;
+export const selectedThinkBeyondCard = (state: ReduxState) =>
+    state?.ThinkBeyond?.selectedCard;
 
-export const selectThinkBeyond = createSelector(
-    selectThinkBeyondData,
-    selectThinkBeyondLoading,
-    selectThinkBeyondError,
-    (data, loading, error) => ({ data, loading, error })
-);
-export const selectCardLoading = (state: ReduxState) => state.thinkBeyond.cardLoading;
-export const selectedThinkBeyondCard = (state: ReduxState) => state?.thinkBeyond?.data?.find((card: any) => card?.selected)
+
+export const selectBobMessages = (state: ReduxState) => state?.ThinkBeyond?.BobMessages;

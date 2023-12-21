@@ -1,25 +1,15 @@
-import React from 'react';
-import { Spinner, Flex } from '@chakra-ui/react';
+import React from "react";
+import { CircularProgress } from "@mui/material";
 
-const ProgressBar = () => {
+const Loading = () => {
     return (
-        <Flex
-            justifyContent="center"
-            alignItems="center"
-            minH="100vh"
-            minW="100vw"
-            h="100vh"
-            w="100vw"
-        >
-            <Spinner
-                thickness="4px"
-                speed="0.65s"
-                emptyColor="gray.200"
-                color="green.500"
-                size="xl"
-            />
-        </Flex>
+        <div className="flex flex-col justify-center items-center min-h-screen max-h-screen">
+            <p className="font-semibold my-5 text-xl">
+                Bob is building....!! Please Wait
+            </p>
+            <CircularProgress color="primary" />
+        </div>
     );
 };
 
-export default ProgressBar;
+export default Loading;

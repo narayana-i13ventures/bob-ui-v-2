@@ -1,7 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import { fetchCompany } from './thunks';
 
-const initialState = {
+const initialState: any = {
     company: {
         companyName: '',
         industry: '',
@@ -14,7 +13,6 @@ const initialState = {
         annualRevenue: '',
         businessModel: '',
     },
-    loading: true,
 }
 
 export const companySlice = createSlice({
@@ -52,22 +50,5 @@ export const companySlice = createSlice({
             state.company.businessModel = action.payload;
         }
     },
-    extraReducers: (builder) => {
-        builder
-            .addCase(fetchCompany.pending, (state) => {
-                state.loading = true
-            })
-            .addCase(fetchCompany.fulfilled, (state, action) => {
-                if (Object.keys(action.payload).length > 0) {
-                    state.loading = false
-                    const { id, ...companyWithoutId } = action.payload;
-                    state.company = companyWithoutId;
-                } else {
-                    return state
-                }
-            })
-            .addCase(fetchCompany.rejected, (state) => {
-                state.loading = false
-            })
-    },
+    extraReducers: (builder) => { },
 })

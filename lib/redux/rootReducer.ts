@@ -1,13 +1,15 @@
-import { AppSlice, Future1BMCSlice, Future1CVPSlice, Future2BMCSlice, Future3BMCSlice, companySlice, menuSlice } from './slices'
-import { thinkBeyondSlice } from './slices/ThinkBeyondSlice'
+/* Instruments */
+import { apiSlice } from './Api'
+import { appSlice, thinkBeyondSlice, Future1BMCSlice, notificationSlice, companySlice, Future1CVPSlice } from './slices'
+import { Future1EmpathySlice } from './slices/Future1EmpathySlice'
 
 export const reducer = {
+  api: apiSlice.reducer,
+  App: appSlice.reducer,
   company: companySlice.reducer,
-  thinkBeyond: thinkBeyondSlice.reducer,
-  App: AppSlice.reducer,
-  menu: menuSlice.reducer,
+  ThinkBeyond: thinkBeyondSlice.reducer,
   Future1BMC: Future1BMCSlice.reducer,
-  Future2BMC: Future2BMCSlice.reducer,
-  Future3BMC: Future3BMCSlice.reducer,
-  Future1CVP: Future1CVPSlice.reducer
+  notifications: notificationSlice.reducer,
+  Future1CVP: Future1CVPSlice.reducer,
+  Future1EMpathy:Future1EmpathySlice.reducer
 }

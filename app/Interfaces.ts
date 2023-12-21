@@ -1,28 +1,24 @@
 export interface ThinkBeyondCards {
-    cardName?: string;
-    cardNumber?: number;
-    cardInfo?: {
-        heading?: string;
-        text?: string;
-        placeholder?: string;
-        _id?: string;
-    }[];
+    id: number;
+    cardName: string;
+    cardSubName?: string;
+    cardInfo?: CardInfo[];
+    selected: boolean;
     started?: boolean;
     complete?: boolean;
-    selected?: boolean;
-    locked?: boolean;
+    locked: boolean;
     type?: string;
-    open?: boolean;
-    bmc_status?: string;
-    id?: string;
+    open: boolean;
+    bmc_status?: String;
+    cardTopics?: string[];
 }
-
 
 export interface CardInfo {
     heading: string;
     text: string;
     placeholder: string;
 }
+
 
 
 export interface OnBoardingStage {

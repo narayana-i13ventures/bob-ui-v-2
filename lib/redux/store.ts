@@ -8,13 +8,12 @@ import {
 
 /* Instruments */
 import { reducer } from './rootReducer'
-import { middleware } from './middleware'
+import { allMiddleware } from './middleware'
 
 export const reduxStore = configureStore({
   reducer,
   middleware: (getDefaultMiddleware) => {
-    return getDefaultMiddleware()
-    // return getDefaultMiddleware().concat(middleware)
+    return getDefaultMiddleware().concat(allMiddleware)
   },
 })
 export const useDispatch = () => useReduxDispatch<ReduxDispatch>()

@@ -1,51 +1,114 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { PaletteMode } from "@mui/material";
+import { createSlice } from "@reduxjs/toolkit";
 
-interface App {
+interface AppState {
+    mode: PaletteMode;
+    BobOpen: boolean;
+    CanvasCardModalOpen: boolean;
+    BobPrefillingOpen: boolean;
+    ThinkBeyondModalOpen: boolean;
+    ThinkBeyondSettingsOpen: boolean;
+    leftSidebarOpen: boolean;
+    rightSidebarOpen: boolean;
     bobThinking: boolean;
-    altPressed: boolean;
-    ChatModalOpen: boolean;
-    bobOpen: boolean;
-    ThinkBeyondModal: boolean;
-    darkTheme: boolean,
-    messageModal: boolean,
-    NotificationModal: boolean
+    NotificationMenu: boolean;
+    profileMenu: boolean;
+    NewProjectModal: boolean;
+    projectShareModal: boolean;
+    projectShareSearchOpen: boolean;
+    confirmationModalOpen: boolean;
+    globalSnackBar: any;
+    activeProfileTab: String;
+    personaConfirmationModal: boolean;
 }
 
-const initialState: App = {
+const initialState: AppState = {
+    mode: "light",
+    BobOpen: false,
+    CanvasCardModalOpen: false,
+    ThinkBeyondModalOpen: false,
+    ThinkBeyondSettingsOpen: false,
+    BobPrefillingOpen: false,
+    leftSidebarOpen: false,
+    rightSidebarOpen: false,
     bobThinking: false,
-    altPressed: false,
-    ChatModalOpen: false,
-    bobOpen: false,
-    ThinkBeyondModal: false,
-    darkTheme: false,
-    messageModal: false,
-    NotificationModal: false
-}
+    NotificationMenu: false,
+    profileMenu: false,
+    NewProjectModal: false,
+    projectShareModal: false,
+    projectShareSearchOpen: false,
+    confirmationModalOpen: false,
+    globalSnackBar: {
+        open: false,
+        content: "",
+    },
+    activeProfileTab: "profile",
+    personaConfirmationModal: false,
+};
 
-export const AppSlice = createSlice({
-    name: 'App',
+export const appSlice = createSlice({
+    name: "app",
     initialState,
     reducers: {
+        toggleTheme: (state) => {
+            state.mode = state.mode === "dark" ? "light" : "dark";
+        },
+
+        toggleBobOpen: (state, action) => {
+            state.BobOpen = action.payload;
+        },
+
+        toggleCanvasCardModal: (state, action) => {
+            state.CanvasCardModalOpen = action.payload;
+        },
+
+        toggleBobPrefillingOpen: (state, action) => {
+            state.BobPrefillingOpen = action.payload;
+        },
+        toggleThinkBeyondModalOpen: (state, action) => {
+            state.ThinkBeyondModalOpen = action.payload;
+        },
+
+        toggleThinkBeyondSettingsOpen: (state, action) => {
+            state.ThinkBeyondSettingsOpen = action.payload;
+        },
+
+        toggleLeftSidebar: (state, action) => {
+            state.leftSidebarOpen = action.payload;
+        },
+
+        toggleRightSidebar: (state, action) => {
+            state.rightSidebarOpen = action.payload;
+        },
         toggleBobThinking: (state, action) => {
             state.bobThinking = action.payload;
         },
-        toggleAltPressed: (state, action) => {
-            state.altPressed = action.payload;
+        toggleNotificationMenu: (state, action) => {
+            state.NotificationMenu = action.payload;
         },
-        toggleBobOpen: (state, action) => {
-            state.bobOpen = action.payload;
+        toggleProfileMenu: (state, action) => {
+            state.profileMenu = action.payload;
         },
-        toggleThinkBeyondModal: (state, action) => {
-            state.ThinkBeyondModal = action.payload;
+        toggleNewProjectModal: (state, action) => {
+            state.NewProjectModal = action.payload;
         },
-        toggleChatModal: (state, action) => {
-            state.ChatModalOpen = action.payload;
+        toggleProjectShareModal: (state, action) => {
+            state.projectShareModal = action.payload;
         },
-        toggleMessageModal: (state, action) => {
-            state.messageModal = action.payload;
+        toggleProjectShareSearchOpen: (state, action) => {
+            state.projectShareSearchOpen = action.payload;
         },
-        toggleNotificationModal: (state, action) => {
-            state.NotificationModal = action.payload;
+        setGlobalSnackBar: (state, action) => {
+            state.globalSnackBar = action.payload;
         },
+        toggleConfirmationModalOpen: (state, action) => {
+            state.confirmationModalOpen = action.payload;
+        },
+        toggleActiveProfileTab: (state, action) => {
+            state.activeProfileTab = action.payload;
+        },
+        togglePersonaConfirmationModal: (state, action) => {
+            state.personaConfirmationModal = action.payload;
+        }
     },
 });

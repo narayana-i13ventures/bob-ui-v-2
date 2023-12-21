@@ -1,44 +1,44 @@
-/* Components */
-import { ReduxProviders } from '@/lib/providers'
 import "./globals.css";
+import Loading from "./loading";
 import type { Metadata } from "next";
+import React, { Suspense } from "react";
 import { Inter } from "next/font/google";
-import { Providers } from "./Registry/ThemeRegistry";
-import ProgressBar from "./loading";
-import { Suspense } from "react";
-import { getServerSession } from 'next-auth';
-import { options } from './api/auth/[...nextauth]/options';
-import AuthProvider from './Registry/AuthProvider';
-import Head from 'next/head';
-
+import { ReduxProviders } from "@/lib/providers";
+import ThemeRegistry from "./components/Registry/ThemeRegistry";
+import GlobalSnackBar from "./components/shared/GlobalSnackBar";
+import AuthProvider from "./components/Registry/AuthProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Bob-Ui",
-  description: "Created with Next Js App Router",
-  icons: '/images/favicon.png'
+  description: "Bob Ui with Mui Library",
+  icons: "/images/favicon.png",
 };
 
-export default async function RootLayout(props: React.PropsWithChildren) {
-  const session = await getServerSession(options);
-
+export default function RootLayout(props: React.PropsWithChildren) {
   return (
     <AuthProvider>
       <ReduxProviders>
         <html lang="en">
-          <body className={inter.className}>
-            <Providers>
-              
-              <Suspense fallback={<ProgressBar />}>
-                {/* <ErrorBoundary fallback={<Error />}> */}
-                {props.children}
-                {/* </ErrorBoundary> */}
-              </Suspense>
-            </Providers>
+          <head>
+            <link rel="preconnect" href="https://fonts.googleapis.com" />
+            <link rel="preconnect" href="https://fonts.gstatic.com" />
+            <link
+              href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"
+              rel="stylesheet"
+            />
+          </head>
+          <body suppressHydrationWarning={true} className={inter.className}>
+            <Suspense fallback={<Loading />}>
+              <ThemeRegistry>
+                {props?.children}
+                <GlobalSnackBar />
+              </ThemeRegistry>
+            </Suspense>
           </body>
         </html>
       </ReduxProviders>
     </AuthProvider>
-  )
+  );
 }

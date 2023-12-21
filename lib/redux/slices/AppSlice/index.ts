@@ -1,2 +1,2 @@
-export * from './AppSlice'
-export * from './selectors'
+export * from './AppSlice';
+export * from './selector'

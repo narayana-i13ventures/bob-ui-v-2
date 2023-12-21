@@ -1,97 +1,173 @@
 import {
-    useSelector,
-    selectedThinkBeyondCard,
-    selectCardLoading
-} from '@/lib/redux';
-import {
-    Card,
-    CardBody,
-    Text,
     Button,
-    Icon,
-    Flex,
-    Tag,
-    Spinner
-} from '@chakra-ui/react';
-import { BsShieldLock } from 'react-icons/bs';
+    Card,
+    CircularProgress,
+    Skeleton,
+    useTheme,
+} from "@mui/material";
+import LockIcon from "@mui/icons-material/Lock";
+import React from "react";
+import {
+    appSlice,
+    selectedThinkBeyondCard,
+    useDispatch,
+    useSelector,
+} from "@/lib/redux";
+import { useUpdateThinkBeyondMutation } from "@/lib/redux/Api";
+import { useRouter } from "next/navigation";
 
-export default function ThinkBeyondCard(props: {
-    card: any;
-    selectCard: any;
-    handleStartButtonPress: any;
-    darkTheme: any;
-}) {
-    const {
-        card,
-        selectCard,
-        handleStartButtonPress,
-        darkTheme
-    } = props;
-
+const ThinkBeyondCard = (props: any) => {
+    const router = useRouter();
+    const theme: any = useTheme();
+    const dispatch = useDispatch();
     const selectedCard = useSelector(selectedThinkBeyondCard);
-    const cardLoading = useSelector(selectCardLoading);
+    const { card, BMCCard, loading }: { card: any; BMCCard: any; loading: any } =
+        props;
+
+    const [
+        updateThinkBeyondCard,
+        { isLoading: updateThinkBeyondCardLoading }
+    ] = useUpdateThinkBeyondMutation();
+
+    const handleThinkBeyondModalOpen = () => {
+        if (selectCard !== null && selectedCard !== undefined && selectedCard.cardName !== "BMC") {
+            dispatch(appSlice.actions.toggleThinkBeyondModalOpen(true));
+        }
+    };
+
+    const handleMicroframeworkNavigation = () => {
+        if (BMCCard) {
+            switch (BMCCard?.type) {
+                case 'future_1_bmc':
+                    router.push('Future1/Microframeworks')
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
+    const selectCard = () => {
+        if (!card?.locked && !BMCCard?.selected) {
+            if (
+                selectedCard &&
+                selectedCard.id !== card.id
+            ) {
+                const updatedSelectedCard = { ...selectedCard, selected: false };
+                updateThinkBeyondCard(updatedSelectedCard)
+                    .unwrap()
+                    .then((data: any) => {
+                        const updatedCard = { ...card, selected: true };
+                        updateThinkBeyondCard(updatedCard);
+                    });
+            }
+        }
+    };
+
+    const CardSkeleton = (props: any) => {
+        return (
+            <Card className={`m-4 p-3 opacity-40 min-w-[200px] ${props?.className}`}>
+                <Skeleton
+                    className="rounded-2xl"
+                    variant="rectangular"
+                    width={"100%"}
+                    height={"20px"}
+                />
+                <Skeleton
+                    className="rounded-2xl my-3"
+                    variant="rectangular"
+                    width={"100%"}
+                    height={"20px"}
+                />
+                <Skeleton
+                    className="rounded-2xl"
+                    variant="rectangular"
+                    width={"100%"}
+                    height={"20px"}
+                />
+            </Card>
+        );
+    };
 
     return (
-        <Card
-        minW={'160px'}
-            cursor={'pointer'}
-            shadow={card?.selected ? 'greenShadow' : !'darkTheme' ? "md" : 'whiteShadow'}
-            variant={card?.locked ? "filled" : "elevated"}
-            bg={darkTheme && card?.locked ? "gray.900" : darkTheme ? "blue.900" : "white"}
-            onClick={() => selectCard(card)}
-            transition="box-shadow 0.3s ease-in-out"
-            _hover={{ shadow: card?.selected ? 'greenShadow' : !card?.locked ? 'greenLight' : !darkTheme ? "md" : 'whiteShadow' }}
-        >
-            {(selectedCard?.id === card?.id && cardLoading) ?
-                <>
-                    <Flex alignItems={'center'} justifyContent={'center'} h={'100%'} w={'100%'}>
-                        <Spinner
-                            thickness="4px"
-                            speed="0.65s"
-                            emptyColor="gray.200"
-                            color="green.500"
-                            size="xl"
-                        />
-                    </Flex>
-                </> :
-                <CardBody h="full">
-                    <Flex alignItems={"center"} justifyContent={"space-between"}>
-                        <Text color={darkTheme ? "white" : "black"} fontSize="xs" fontWeight={"semibold"}>{card?.cardName}</Text>
-                    </Flex>
-                    {card?.locked ? (
-                        <Flex justifyContent={"center"} p={2}>
-                            <Icon as={BsShieldLock} ml={4} mr={4} boxSize={7} color={darkTheme ? "white" : "gray.400"} />
-                        </Flex>
-                    ) : (
-                        <Flex mt={1} gap={1}>
-                            <Tag
-                                borderRadius='full'
-                                variant='solid'
-                                colorScheme={!card?.started ? "red" : card?.complete ? "green" : "yellow"}
-                                size="sm"
-                            >
-                                {!card?.started ? "Incomplete" : card?.complete ? "Completed" : "In Progress..."}
-                            </Tag>
-                            {card?.type === "future_bmc" && (
-                                <Tag
-                                    borderRadius='full'
-                                    variant='solid'
-                                    colorScheme={card?.bmc?.status === "empty" ? "red" : card?.bmc?.status === "complete" ? "green" : "yellow"}
-                                    size="sm"
-                                >
-                                    BMC
-                                </Tag>
-                            )}
-                        </Flex>
+        <>
+            {!loading ? (
+                <Card
+                    onClick={selectCard}
+                    className={`${card?.locked ? "cursor-auto" : "cursor-pointer"
+                        } min-w-[200px] m-4 p-3 ${props?.className
+                        } ease-in transition-all duration-200 shrink`}
+                    sx={{
+                        boxShadow:
+                            card?.selected || BMCCard?.selected
+                                ? theme.custom.greenShadow
+                                : "none",
+                    }}
+                >
+                    {!card?.locked && (
+                        <div
+                            className={`${!card?.locked || !BMCCard?.locked
+                                ? card?.started
+                                    ? card?.complete
+                                        ? "bg-green-400"
+                                        : "bg-orange-400"
+                                    : "bg-red-400"
+                                : ""
+                                } text-black px-2 inline-block rounded-md text-sm`}
+                        >
+                            <span>
+                                {!card?.started
+                                    ? "Incomplete"
+                                    : card?.complete
+                                        ? "Completed"
+                                        : "In Progress..."}
+                            </span>
+                        </div>
                     )}
-                    <Flex mt={1}>
-                        <Button hidden={!card?.selected} size="xs" colorScheme={!card?.complete ? 'green' : "blue"} onClick={() => handleStartButtonPress()}>
-                            {!card?.started ? "Start" : !card?.complete ? "Continue" : "Update"}
-                        </Button>
-                    </Flex>
+                    <p className="font-semibold text-md my-2 text-center">
+                        {card?.cardName}
+                    </p>
+                    {BMCCard &&
+                        !BMCCard?.locked &&
+                        (card?.selected || BMCCard?.selected) && (
+                            <Button
+                                onClick={handleMicroframeworkNavigation}
+                                variant="outlined"
+                                size="small"
+                                className="!font-semibold !capitalize w-full !my-2 relative button-pulse"
+                            >
+                                <LockIcon className="!text-sm mr-3" />
+                                Micro Frameworks
+                            </Button>
+                        )}
+                    {card?.locked ? (
+                        <div className="w-full flex justify-center items-center">
+                            <LockIcon className="text-[50px] text-neutral-400" />
+                        </div>
+                    ) : (
+                        (card?.selected || BMCCard?.selected) &&
+                        (updateThinkBeyondCardLoading ? (
+                            <div className="flex justify-center items-center my-1">
+                                <CircularProgress size={"30px"} />
+                            </div>
+                        ) : (
+                            <Button
+                                onClick={handleThinkBeyondModalOpen}
+                                disableElevation
+                                variant="contained"
+                                size="small"
+                                className="!text-white !font-semibold !capitalize w-full"
+                            >
+                                {card.complete ? "Update" : "Start"}
+                            </Button>
+                        ))
+                    )}
+                </Card>
+            ) : (
+                <CardSkeleton className={props?.className} />
+            )}
+        </>
+    );
+};
 
-                </CardBody>}
-        </Card>
-
-    )
-}
+export default ThinkBeyondCard;

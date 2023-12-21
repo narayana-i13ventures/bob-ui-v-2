@@ -1,18 +1,9 @@
+import type { ReduxState } from "@/lib/redux";
 
-import type { ReduxState } from '@/lib/redux'
-import { createSelector } from '@reduxjs/toolkit';
+export const selectedFuture1BMC = (state: ReduxState) =>
+    state?.Future1BMC?.selectedCard;
 
-const selectBMCData = (state: ReduxState) => state.Future1BMC.data;
-const selectBMCLoading = (state: ReduxState) => state.Future1BMC.loading;
-const selectBMCError = (state: ReduxState) => state.Future1BMC.error;
 
-export const selectBMCFuture1 = createSelector(
-    selectBMCData,
-    selectBMCLoading,
-    selectBMCError,
-    (data, loading, error) => ({ data, loading, error })
-);
-
-export const selectedFuture1BMCCard = (state: ReduxState) => state?.Future1BMC?.data?.find((card: any) => card?.selected)
-export const selectFuture1BMCCardChat = (state: ReduxState) => state?.Future1BMC?.conversation;
-
+export const selectCVPPrefillBody = (state: ReduxState) => state?.Future1BMC?.CVPPrefillBody;
+export const selectFuture1BMCCompleted = (state: ReduxState) => state?.Future1BMC?.canvasCompleted;
+export const selectFuture1BMCCanvasColors = (state :ReduxState) => state?.Future1BMC?.canvasColors;
