@@ -4,7 +4,7 @@ import { getIdToken } from "@/utils/sessionTokenAccessor";
 import { NextApiRequest, NextApiResponse } from "next/types";
 import { NextResponse } from 'next/server';
 export async function GET(
-    req: any
+    req: NextApiRequest
 ) {
     if (req.method === "GET") {
         try {

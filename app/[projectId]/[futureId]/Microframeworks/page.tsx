@@ -49,7 +49,7 @@ const Microframeworks = () => {
             </>
           ) : (
             <div className="mt-6 grid grid-cols-5 gap-4 w-full">
-              {canvases?.filter((canvas: any) => canvas?.locked === false)?.map((canvas: any, index: any) => (
+              {canvases?.filter((canvas:any) => canvas?.locked === false)?.map((canvas: any, index: any) => (
                 <MicroframeworkCard key={index} canvas={canvas} />
               ))}
             </div>
