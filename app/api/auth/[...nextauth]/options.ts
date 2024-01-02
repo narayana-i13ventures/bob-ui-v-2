@@ -21,9 +21,7 @@ const logoutUserFromProvider = async (endsessionParam: string) => {
 }
 
 const refreshAccessToken = async (token: JWT) => {
-    const nowTimeStamp = Math.floor(Date.now() / 1000);
     try {
-        if (nowTimeStamp > token?.expires_at) throw Error;
         const details = {
             client_id: process.env.KEYCLOAK_CLIENT_ID,
             client_secret: process.env.KEYCLOAK_SECRET,
@@ -48,12 +46,7 @@ const refreshAccessToken = async (token: JWT) => {
         const refreshedTokens = await response.json();
         if (!response.ok) throw refreshedTokens;
         return {
-            ...token,
-            // access_token: refreshedTokens?.access_token,
-            // expires_at: Date.now() + (refreshedTokens.expires_at - 15) * 1000,
-            // refresh_token: refreshedTokens?.refresh_token,
-            // expires:
-            //     Date.now() + (refreshedTokens.refresh_expires_in - 15) * 1000,
+            ...token
         };
     } catch (error) {
         return {
@@ -141,11 +134,7 @@ export const options: NextAuthOptions = {
     callbacks: {
         async jwt({ token, account }: any) {
             const nowTimeStamp = Math.floor(Date.now() / 1000);
-            // console.log("__________Now Time Stamp_______");
-            // console.log(moment.unix(nowTimeStamp).format("DD/MM/YYYY HH:mm:ss"));
-
             if (account) {
-                // console.log("__________Account_______");
                 console.log(account);
                 token.decoded = jwtDecode(account?.access_token);
                 token.access_token = account.access_token;
@@ -154,44 +143,17 @@ export const options: NextAuthOptions = {
                 token.refresh_token = account.refresh_token;
                 return token;
             } else if (nowTimeStamp < token.expires_at) {
-                // token has not expired yet, return it
-                // console.log(token)
-                // console.log("__________Token Not Expired_______");
-                // console.log("Token not expired");
-                // console.log("Token Expiry Time: " + moment.unix(token.expires_at).format("DD/MM/YYYY HH:mm:ss"));
                 return token;
             } else {
-                // token is expired, try to refresh it
-                // console.log(token);
-
-                // console.log("__________Token Expired_______");
-                // console.log("Now Timestamp : " + moment.unix(nowTimeStamp).format("DD/MM/YYYY HH:mm:ss"));
-                // console.log("Token Expires at : " + moment.unix(token.expires_at).format("DD/MM/YYYY HH:mm:ss"));
-                // console.log("Token iat : " + moment.unix(token.exp).format("DD/MM/YYYY HH:mm:ss"));
-                // console.log("Token exp : " + moment.unix(token.iat).format("DD/MM/YYYY HH:mm:ss"));
-                // console.log("Result : " + (nowTimeStamp < token.expires_at));
-                // console.log("Token has expired. Will refresh...");
                 try {
                     const refreshedToken: any = await refreshAccessToken(token);
-                    // console.log("__________Token Refreshed_______");
-                    // console.log("Now Timestamp : " + moment.unix(nowTimeStamp).format("DD/MM/YYYY HH:mm:ss"));
-                    // console.log("Token Timestamp : " + moment.unix(refreshedToken?.expires_at).format("DD/MM/YYYY HH:mm:ss"));
-                    // console.log("Token iat : " + moment.unix(refreshedToken?.exp).format("DD/MM/YYYY HH:mm:ss"));
-                    // console.log("Token exp : " + moment.unix(refreshedToken?.iat).format("DD/MM/YYYY HH:mm:ss"));
-                    // console.log("Result : " + (nowTimeStamp < refreshedToken?.expires_at));
-                    // console.log("Token is refreshed.");
-                    // console.log(refreshedToken);
-
                     return refreshedToken;
                 } catch (error) {
-                    // console.error("Error refreshing access token", error);
                     return { ...token, error: "RefreshAccessTokenError" };
                 }
             }
         },
         async session({ session, user, token }: any) {
-            // session.access_token = encrypt(token?.access_token);
-            // session.id_token = encrypt(token?.id_token);
             session.access_token = token?.access_token;
             session.id_token = token?.id_token;
             session.roles = token?.decoded?.realm_access?.roles;
