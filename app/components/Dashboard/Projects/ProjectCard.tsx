@@ -10,6 +10,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ProjectMenu from "./ProjectMenu";
 import Link from "next/link";
 import ProjectShareModal from "../../shared/Share/ProjectShareModal";
+import moment from 'moment';
 
 const ProjectCard = (props: any) => {
     const { project } = props;
@@ -38,23 +39,24 @@ const ProjectCard = (props: any) => {
         <>
             <Card className="p-2 flex justify-start items-start flex-col ">
                 <div className="flex justify-between items-center w-full">
-                    <Link href={`${project?.id}/ThinkBeyond`}>
+                    <Link href={`${project?.project_id}/ThinkBeyond`}>
                         <p className="hover:underline underline-offset-2 py-2 text-lg font-semibold overflow-hidden overflow-ellipsis whitespace-nowrap">
-                            {project?.companyName}
+                            {project?.project_name}
                         </p>
                     </Link>
                     <IconButton ref={projectMenuBtnRef} onClick={handleProjectMenuOpen}>
                         <MoreVertIcon />
                     </IconButton>
                     <ProjectMenu
-                        projectId={project?.id}
+                        projectId={project?.project_id}
                         projectMenuOpen={projectMenuOpen}
                         setProjectMenuOpen={setProjectMenuOpen}
                         value={projectMenuBtnRef?.current}
                     />
                 </div>
                 <p className="py-2 text-sm font-semibold">
-                    Started on:&nbsp;{project?.createdAt}
+                    {/* Started on:&nbsp;{project?.created_on} */}
+                    Started on:&nbsp;{moment(project?.created_on).format('LL')}
                 </p>
                 <div className="flex justify-start items-center my-2">
                     <p className="py-2 text-sm font-semibold">Shared with:&nbsp;</p>

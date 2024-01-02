@@ -20,11 +20,22 @@ const Transition = React.forwardRef(function Transition(
 const UserMenu = (props: any) => {
     const theme: any = useTheme();
     const dispatch = useDispatch();
-    const { data }: any = useSession();  
+    const session: any = useSession();
     const { profileMenu }: { profileMenu: any } = useSelector(selectApp);
+
+    const keycloakSessionLogout = async () => {
+        try {
+            await fetch(`https://i13ventureskeycloak.azurewebsites.net/realms/Bob/protocol/openid-connect/logout??client_id=bobUI&id_token_hint=${session?.data?.id_token}`, { method: 'GET' });
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     const handleSignOut = () => {
         signOut({ callbackUrl: '/' });
+        // keycloakSessionLogout()
+        //     .then((data: any) => {
+        //     })
     };
 
     return (
@@ -62,7 +73,7 @@ const UserMenu = (props: any) => {
             }}
         >
             <Link
-                href={`/profile/${data?.user?.name}`}
+                href={`/profile/${session?.data?.user?.name}`}
                 style={{ color: `${theme.palette.text.primary}` }}
             >
                 <div
@@ -79,10 +90,10 @@ const UserMenu = (props: any) => {
                             height: "28px",
                             borderRadius: "100%",
                         }}
-                        src={data?.user?.image}
+                        src={session?.data?.user?.image}
                     />
                     <span className="truncate ... w-[100px] overflow-hidden">
-                        {data?.user?.name}
+                        {session?.data?.user?.name}
                     </span>
                 </div>
             </Link>

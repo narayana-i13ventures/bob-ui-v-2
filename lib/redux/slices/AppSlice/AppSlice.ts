@@ -20,6 +20,7 @@ interface AppState {
     globalSnackBar: any;
     activeProfileTab: String;
     personaConfirmationModal: boolean;
+    show_projects: String
 }
 
 const initialState: AppState = {
@@ -44,6 +45,7 @@ const initialState: AppState = {
     },
     activeProfileTab: "profile",
     personaConfirmationModal: false,
+    show_projects: 'own'
 };
 
 export const appSlice = createSlice({
@@ -109,6 +111,9 @@ export const appSlice = createSlice({
         },
         togglePersonaConfirmationModal: (state, action) => {
             state.personaConfirmationModal = action.payload;
+        },
+        toggleShowProjects: (state, action) => {
+            state.show_projects = action.payload;
         }
     },
 });

@@ -5,8 +5,8 @@ import { CircularProgress, IconButton, useTheme } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { useParams, usePathname } from "next/navigation";
 import { appSlice, selectApp, useDispatch, useSelector } from "@/lib/redux";
-import { useGetCompanyByIdQuery } from "@/lib/redux/Api";
 import Link from "next/link";
+import { useGetProjectByIdQuery } from "@/lib/redux/projectApi";
 
 const CanvasHeader = (props: any) => {
     const path = usePathname();
@@ -24,7 +24,7 @@ const CanvasHeader = (props: any) => {
         data: company,
         isLoading: companyLoading,
         isError: companyError,
-    } = useGetCompanyByIdQuery(projectId);
+    } = useGetProjectByIdQuery(projectId);
 
     const handleLeftBarOpen = () => {
         dispatch(appSlice.actions.toggleLeftSidebar(true));
@@ -91,7 +91,7 @@ const CanvasHeader = (props: any) => {
                             <div className="font-semibold text-lg">
                                 <Link href={`/${projectId}/ThinkBeyond`}>
                                     <span className="hover:underline underline-offset-4 cursor-pointer">
-                                        {company?.companyName}
+                                        {company[0]?.companyName}
                                     </span>
                                 </Link>
                             </div>

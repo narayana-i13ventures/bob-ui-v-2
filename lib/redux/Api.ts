@@ -3,7 +3,8 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const apiSlice = createApi({
     reducerPath: "api",
     baseQuery: fetchBaseQuery({
-        baseUrl: "https://bob-cards-nodejs-mongodb-narayanas-projects.vercel.app/",
+        baseUrl: "https://bob-cards-nodejs-mongodb-narayanas-projects.vercel.app",
+        // baseUrl: "http://localhost:4000",
     }),
     keepUnusedDataFor: 100000000,
     tagTypes: ["ThinkBeyond", "company", "Future_1_BMC", "Future_1_CVP", "Menu"],

@@ -7,6 +7,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import React, { JSXElementConstructor } from "react";
 import { TransitionProps } from "@mui/material/transitions";
 import { useDeleteCompanyByIdMutation } from "@/lib/redux/Api";
+import { ProjectApiSlice, useDeleteProjectByIdMutation } from "@/lib/redux/projectApi";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -19,9 +20,12 @@ const Transition = React.forwardRef(function Transition(
 
 const ProjectMenu = (props: any) => {
     const theme: any = useTheme();
-    const [deleteProject] = useDeleteCompanyByIdMutation();
+    // const [deleteProject] = useDeleteCompanyByIdMutation();
+    const [deleteProject] = useDeleteProjectByIdMutation();
     const handleDeleteProjectById = (projectId: any) => {
-        deleteProject(projectId);
+        // deleteProject(projectId);
+        console.log(ProjectApiSlice.endpoints);
+        
     }
     return (
         <Popover

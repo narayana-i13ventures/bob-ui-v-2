@@ -20,11 +20,11 @@ import KBD from "../shared/KBD";
 import { fetchPrefillData } from "@/lib/redux/slices/ApiCalls";
 import { Button, DialogActions, IconButton, TextField } from "@mui/material";
 import {
-    useGetCompanyByIdQuery,
     useNextThinkBeyondMutation,
     usePrefillFuture1BMCMutation,
 } from "@/lib/redux/Api";
 import { useParams } from "next/navigation";
+import { useGetProjectByIdQuery } from "@/lib/redux/projectApi";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -42,7 +42,7 @@ const ThinkBeyondModal = (props: any) => {
         data: company,
         isLoading: companyLoading,
         isError: companyError,
-    } = useGetCompanyByIdQuery(projectId);
+    } = useGetProjectByIdQuery(projectId);
     const BobMessages = useSelector(selectBobMessages);
     const [setNextCard] = useNextThinkBeyondMutation();
     const selectedCard = useSelector(selectedThinkBeyondCard);
@@ -141,6 +141,13 @@ const ThinkBeyondModal = (props: any) => {
                     shared: undefined,
                     id: undefined,
                     createdAt: undefined,
+                    can_modify: undefined,
+                    is_active: undefined,
+                    is_owner: undefined,
+                    milvus_collection: undefined,
+                    modified_on: undefined,
+                    user_id: undefined,
+                    project_id:undefined
                 },
                 bobMessages: BobMessages?.slice(
                     Math.max(BobMessages.length - 5, 0)

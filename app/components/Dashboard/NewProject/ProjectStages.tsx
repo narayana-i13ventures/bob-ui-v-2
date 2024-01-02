@@ -17,6 +17,7 @@ import {
     useTheme,
 } from "@mui/material";
 import { useCreateCompanyMutation } from "@/lib/redux/Api";
+import { useCreateProjectMutation } from "@/lib/redux/projectApi";
 
 const ProjectStages = () => {
     const theme = useTheme();
@@ -24,7 +25,8 @@ const ProjectStages = () => {
     const company = useSelector(selectCompany);
     const [inputError, setInputError] = useState("");
     const [currentStage, setCurrentStage] = useState(0);
-    const [CreateCompany] = useCreateCompanyMutation();
+    // const [CreateCompany] = useCreateCompanyMutation();
+    const [CreateCompany] = useCreateProjectMutation();
     const {
         companyName,
         industry,
@@ -279,7 +281,7 @@ const ProjectStages = () => {
             }
 
             if (currentStage === 9) {
-                CreateCompany(company).unwrap()
+                CreateCompany({ projectData: company })
             }
             setInputError("");
             setCurrentStage(currentStage + 1);

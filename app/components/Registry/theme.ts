@@ -6,6 +6,7 @@ interface AppTheme {
 
 export const generateThemeOptions = (appTheme: AppTheme): any => {
     const mode = appTheme.mode || 'light';
+    // const primaryColor = '#5DD140';
     const primaryColor = '#5DD140';
     const secondaryColor = '#5DD140';
     const backgroundColor = mode === 'light' ? '#ffffff' : '#010101';

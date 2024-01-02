@@ -18,6 +18,7 @@ const Header = () => {
     const theme = useTheme();
     const dispatch = useDispatch();
     const { data }: any = useSession();
+
     const NotificationRef = useRef(null);
     const ProfileMenuRef = useRef(null);
     const unreadNotifications = useSelector(selectUnreadNotifications);

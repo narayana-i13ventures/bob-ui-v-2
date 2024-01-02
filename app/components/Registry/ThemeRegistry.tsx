@@ -6,8 +6,10 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import NextAppDirEmotionCacheProvider from "./EmotionCache";
 import { useSelector, selectApp } from "@/lib/redux";
 import { useMediaQuery } from "@mui/material";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import Loading from "@/app/loading";
+import { useEffect } from "react";
+import { log } from "console";
 
 export default function ThemeRegistry({
   children,
@@ -22,12 +24,20 @@ export default function ThemeRegistry({
       mode: mode,
     })
   );
-  const { data, status } = useSession();
+  const session: any = useSession();
+
+  useEffect(() => {
+    if (session?.error === "RefreshAccessTokenError" || session.status === 'unauthenticated') {
+      signIn('keycloak', {
+        callbackUrl: `http://localhost:3000`,
+      }); // Force sign in to hopefully resolve error
+    }
+  }, [session]);
   return (
     <NextAppDirEmotionCacheProvider options={{ key: "mui" }}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        {(status !== 'loading') ? (
+        {(session?.status !== 'loading' && session?.status !== 'unauthenticated') ? (
           <>
             {matches ? (
               <div className="w-full h-screen flex justify-center items-center">

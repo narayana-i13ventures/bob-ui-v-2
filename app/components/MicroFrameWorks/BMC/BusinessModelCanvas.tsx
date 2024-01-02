@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CanvasCard from "../CanvasCard";
 import { useTheme } from "@mui/material";
 import { useParams } from "next/navigation";
@@ -10,7 +10,7 @@ import {
     useDispatch,
 } from "@/lib/redux";
 import BobPrefillingBackdrop from "../../shared/BobPrefillingBackdrop";
-
+import { toPng, toSvg } from 'html-to-image';
 const BusinessModelCanvas = () => {
     const theme: any = useTheme();
     const { futureId } = useParams();
@@ -83,9 +83,27 @@ const BusinessModelCanvas = () => {
         }
     }, [BMCCards]);
 
+    const elementRef: any = useRef(null);
+
+    const htmlToImageConvert = () => {
+        toSvg(elementRef?.current, {
+            canvasHeight: 2000,
+            cacheBust: false,
+            backgroundColor: 'white'
+        })
+            .then((dataUrl) => {
+                const link = document.createElement("a");
+                link.download = "my-image-name.svg";
+                link.href = dataUrl;
+                link.click();
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
     return (
         <>
-            <div className="select-none max-h-full w-full h-full grid grid-rows-6 grid-cols-10 gap-2 py-2 transition-all duration-100 ease-in">
+            <div ref={elementRef} className="select-none max-h-full w-full h-full grid grid-rows-6 grid-cols-10 gap-2 py-2 transition-all duration-100 ease-in">
                 <div className="row-span-4 col-span-2">
                     <CanvasCard
                         expand={true}

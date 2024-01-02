@@ -70,7 +70,7 @@ const MicroframeworkWrapper = (props: any) => {
                     <CanvasNavigation drawerWidth={drawerWidth + 50} />
                     <CanvasArea
                         theme={theme}
-                        className="flex justify-start items-start w-full h-[calc(100%-40px)] py-1 px-8"
+                        className="flex flex-col justify-start items-start w-full h-[calc(100%-40px)] py-1 px-8"
                         leftopen={leftSidebarOpen ? "true" : undefined}
                         rightopen={rightSidebarOpen ? "true" : undefined}
                     >

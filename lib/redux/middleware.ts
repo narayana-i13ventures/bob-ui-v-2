@@ -1,6 +1,7 @@
 /* Core */
 import { createLogger } from 'redux-logger'
 import { apiSlice } from './Api'
+import { ProjectApiSlice } from './projectApi';
 
 const middleware: any[] = [
   // createLogger({
@@ -18,6 +19,6 @@ const middleware: any[] = [
   // }),
 ]
 
-const allMiddleware = [apiSlice.middleware, ...middleware];
+const allMiddleware = [apiSlice.middleware, ProjectApiSlice.middleware, ...middleware];
 
 export { allMiddleware };
