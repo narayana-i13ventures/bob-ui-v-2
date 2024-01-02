@@ -29,7 +29,7 @@ export default function ThemeRegistry({
   useEffect(() => {
     if (session?.error === "RefreshAccessTokenError" || session.status === 'unauthenticated') {
       signIn('keycloak', {
-        callbackUrl: `http://localhost:3000`,
+        callbackUrl: `https://bob-ui-v-2.vercel.app`,
       }); // Force sign in to hopefully resolve error
     }
   }, [session]);
