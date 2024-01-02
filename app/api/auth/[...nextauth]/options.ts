@@ -46,9 +46,6 @@ const refreshAccessToken = async (token: JWT) => {
             body: formData,
         });
         const refreshedTokens = await response.json();
-        console.log(await response.json());
-        console.log(response.ok);
-
         if (!response.ok) throw refreshedTokens;
         return {
             ...token,
@@ -59,8 +56,6 @@ const refreshAccessToken = async (token: JWT) => {
             //     Date.now() + (refreshedTokens.refresh_expires_in - 15) * 1000,
         };
     } catch (error) {
-        console.log(error);
-
         return {
             ...token,
             error: 'RefreshAccessTokenError',
@@ -134,7 +129,7 @@ export const options: NextAuthOptions = {
                         })
                         logoutUserFromProvider(`${endsessionURL}?${endsessionParams}`);
                     } else {
-                        console.error("id Token is not a string.");
+                        // console.error("id Token is not a string.");
                         // Handle the error or log accordingly
                     }
                 }
@@ -146,8 +141,8 @@ export const options: NextAuthOptions = {
     callbacks: {
         async jwt({ token, account }: any) {
             const nowTimeStamp = Math.floor(Date.now() / 1000);
-            console.log("__________Now Time Stamp_______");
-            console.log(moment.unix(nowTimeStamp).format("DD/MM/YYYY HH:mm:ss"));
+            // console.log("__________Now Time Stamp_______");
+            // console.log(moment.unix(nowTimeStamp).format("DD/MM/YYYY HH:mm:ss"));
 
             if (account) {
                 // console.log("__________Account_______");
