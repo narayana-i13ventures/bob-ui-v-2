@@ -15,6 +15,7 @@
     "@uiw/react-color-github": "^2.0.3",
     "cryptr": "^6.3.0",
     "framer-motion": "^10.16.5",
+    "html-to-image": "^1.11.11",
     "jwt-decode": "^4.0.0",
     "lottie-react": "^2.4.0",
     "moment": "^2.30.1",
